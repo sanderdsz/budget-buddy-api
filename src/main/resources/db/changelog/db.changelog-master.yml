@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01
+      author: sander
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/users/001_create_users_table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/users_data/001_create_users_data_table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/users_data_external/001_create_users_data_external_table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/expenses/001_create_expenses_table.sql
+            relativeToChangelogFile: true
