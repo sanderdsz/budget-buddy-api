@@ -2,12 +2,14 @@ package com.asana.budgetbuddy.model;
 
 import com.asana.budgetbuddy.enums.ExpenseType;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "expenses")
 public class Expense extends BaseEntity {
 

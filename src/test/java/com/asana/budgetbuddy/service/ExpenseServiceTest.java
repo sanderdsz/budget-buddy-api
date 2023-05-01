@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.service;
 
+import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.User;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,29 @@ public class ExpenseServiceTest {
     @Autowired
     protected ExpenseService expenseService;
 
+    @Autowired
+    protected UserService userService;
+
     @Test
-    void shouldFindExpenseById() {
-        Optional<Expense> expense = this.expenseService.getById(1L);
-        assertThat(expense.isPresent()).isTrue();
+    void shouldGetById() {
+        User newUser = User.builder()
+                .name("Lorem Ipsum")
+                .email("lorem@ipsum.com")
+                .build();
+        User user = this.userService.save(newUser);
+
+        Expense newExpense = Expense.builder()
+                .value(10.00)
+                .expenseType(ExpenseType.GROCERY)
+                .user(user)
+                .build();
+        Expense expense = this.expenseService.save(newExpense);
+        Optional<Expense> oldExpense = this.expenseService.getById(expense.getId());
+        assertThat(oldExpense.get().getId()).isNotEqualTo(0L);
     }
 
     @Test
-    void shouldInsertExpense() {
+    void shouldSave() {
         User user = new User();
         user.setId(1L);
         user.setName("Lorem Ipsum");
