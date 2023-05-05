@@ -12,7 +12,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Component
+//@Component
 public class LoggingFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerInterceptor.class);

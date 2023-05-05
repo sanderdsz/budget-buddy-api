@@ -21,5 +21,15 @@ databaseChangeLog:
         - sqlFile:
             dbms: mysql
             encoding: utf8
+            path: changelog/migrations/users_children/001_create_users_children_table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/users_parent/001_create_users_parent_table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
             path: changelog/migrations/expenses/001_create_expenses_table.sql
             relativeToChangelogFile: true
