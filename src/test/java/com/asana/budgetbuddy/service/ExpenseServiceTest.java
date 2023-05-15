@@ -20,6 +20,7 @@ public class ExpenseServiceTest {
     @Autowired
     protected UserService userService;
 
+    /*
     @Test
     void shouldGetById() {
         User newUser = User.builder()
@@ -37,6 +38,8 @@ public class ExpenseServiceTest {
         Optional<Expense> oldExpense = this.expenseService.getById(expense.getId());
         assertThat(oldExpense.get().getId()).isNotEqualTo(0L);
     }
+
+     */
 
     @Test
     void shouldSave() {

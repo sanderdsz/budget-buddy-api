@@ -19,6 +19,6 @@ public class UserData extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "refresh_token")
+    @Transient
     private String refreshToken;
 }

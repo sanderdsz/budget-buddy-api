@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.dto;
 
+import com.asana.budgetbuddy.model.User;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -10,19 +11,11 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class UserUpdateDTO {
 
     @Id
     private Long id;
-
-    private String name;
-
-    private String email;
-
-    private Collection<UserChildrenDTO> userChildren;
-
-    private UserParentDTO userParent;
-
-    private String refreshToken;
-
+    private String password;
+    private Collection<User> userChildren;
+    private User userParent;
 }

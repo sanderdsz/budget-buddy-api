@@ -1,7 +1,6 @@
 package com.asana.budgetbuddy.util;
 
 import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserData;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -15,20 +14,20 @@ import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
-//@Component
-public class JwtHelper {
+@Component
+public class JwtUtil {
 
     @Value("#{${accessTokenExpirationMinutes} * 60 * 1000}")
     private int accessTokenExpirationMs;
     @Value("#{${refreshTokenExpirationMinutes} * 60 * 1000}")
     private int refreshTokenExpirationMs;
     static final String issuer = "jwt";
-    private Algorithm accessTokenAlgorithm;
-    private Algorithm refreshTokenAlgorithm;
-    private JWTVerifier accessTokenVerifier;
-    private JWTVerifier refreshTokenVerifier;
+    private final Algorithm accessTokenAlgorithm;
+    private final Algorithm refreshTokenAlgorithm;
+    private final JWTVerifier accessTokenVerifier;
+    private final JWTVerifier refreshTokenVerifier;
 
-    public JwtHelper(
+    public JwtUtil(
             @Value("${accessTokenSecret}")
             String accessTokenSecret,
 
@@ -55,11 +54,11 @@ public class JwtHelper {
                 .sign(accessTokenAlgorithm);
     }
 
-    public String generateRefreshToken(User user, UserData userData) {
+    public String generateRefreshToken(User user) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withSubject(String.valueOf(user.getId()))
-                .withClaim("tokenId", userData.getId().toString())
+                .withClaim("tokenId", user.getId().toString())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(new Date().getTime() + refreshTokenExpirationMs))
                 .sign(refreshTokenAlgorithm);

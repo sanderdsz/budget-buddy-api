@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,13 +23,17 @@ public class RefreshToken {
     private UUID id = UUID.randomUUID();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_data_id", referencedColumnName = "id")
+    private UserData userDataId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
     private LocalDateTime expiresDate;
 
+    @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

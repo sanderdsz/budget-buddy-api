@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.service;
 
+import com.asana.budgetbuddy.dto.UserRegistrationDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,17 @@ public class UserService {
     }
 
     @Transactional
-    public User save(User user) {
+    public User save(UserRegistrationDTO userRegistration) {
+        User newUser = User.builder()
+                .name(userRegistration.getName())
+                .email(userRegistration.getEmail())
+                .build();
+        userRepository.save(newUser);
+        return newUser;
+    }
+
+    @Transactional
+    public User update(User user) {
         userRepository.save(user);
         return user;
     }
