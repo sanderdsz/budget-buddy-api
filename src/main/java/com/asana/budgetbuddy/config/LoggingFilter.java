@@ -16,7 +16,7 @@ import java.util.*;
 /*
  * This is a custom filter for logging responses and requests.
  */
-@Component
+//@Component
 public class LoggingFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerInterceptor.class);
