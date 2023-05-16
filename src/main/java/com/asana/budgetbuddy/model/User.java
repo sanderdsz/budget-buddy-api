@@ -39,4 +39,6 @@ public class User extends BaseEntity {
     )
     private User userParent;
 
+    @Column(name = "is_external")
+    private boolean isExternal = false;
 }

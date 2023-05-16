@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.dto;
 
 import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.model.UserData;
 
 import java.util.Collection;
 
@@ -8,6 +9,7 @@ import java.util.Collection;
  * This class is a mapper for the DTO return of User class,
  * made to avoid infinite loop from the entity JSON return.
  */
+
 public class UserMapper {
 
     public static Collection<UserChildrenDTO> toChildrenDTO(User user) {
@@ -30,7 +32,7 @@ public class UserMapper {
         return userParentDTO;
     }
 
-    public static UserDTO toDTO(User user) {
+    public static UserDTO toDTO(User user, UserData userData) {
         UserDTO userDTO;
         if (user.getUserParent() != null) {
             userDTO = UserDTO
@@ -39,6 +41,16 @@ public class UserMapper {
                     .name(user.getName())
                     .email(user.getEmail())
                     .userParent(toParentDTO(user))
+                    .refreshToken(userData.getRefreshToken())
+                    .build();
+        } else if (user.getUserChildren() != null) {
+            userDTO = UserDTO
+                    .builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .userChildren(toChildrenDTO(user))
+                    .refreshToken(userData.getRefreshToken())
                     .build();
         } else {
             userDTO = UserDTO
@@ -46,10 +58,20 @@ public class UserMapper {
                     .id(user.getId())
                     .name(user.getName())
                     .email(user.getEmail())
-                    .userChildren(toChildrenDTO(user))
+                    .refreshToken(userData.getRefreshToken())
                     .build();
         }
         return userDTO;
     }
 
+    public static UserDTO toDTOWithoutRefresh(User user) {
+        return UserDTO
+                    .builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .userChildren(toChildrenDTO(user))
+                    .build();
+    }
 }
+
