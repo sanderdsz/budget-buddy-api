@@ -55,7 +55,7 @@ public class UserDataService {
             String refreshToken = jwtUtil.generateRefreshToken(user);
             UserData newUserData = UserData
                     .builder()
-                    .userId(user)
+                    .user(user)
                     .password(passwordUtil.generateEncryption(userRegistration.getPassword()))
                     .refreshToken(refreshToken)
                     .build();
@@ -84,7 +84,7 @@ public class UserDataService {
             InvalidKeyException {
         String newEncryption = passwordUtil.generateEncryption(password);
         String refreshToken = jwtUtil.generateRefreshToken(user);
-        Optional<UserData> currentUserData = repository.findByUserId(user.getId());
+        Optional<UserData> currentUserData = repository.findByUser_Id(user.getId());
         currentUserData.get().setPassword(newEncryption);
         currentUserData.get().setRefreshToken(refreshToken);
         repository.save(currentUserData.get());

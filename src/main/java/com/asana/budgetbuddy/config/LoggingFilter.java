@@ -19,12 +19,12 @@ import java.util.*;
 //@Component
 public class LoggingFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggerInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
     private long startTime = System.nanoTime();
 
-    private static void requestLoggerBuilder(ContentCachingRequestWrapper request) {
-        JSONObject body = requestStringToJsonBody(request);
+    private static void requestLoggerBuilder(HttpServletRequest request) {
+        //JSONObject body = requestStringToJsonBody(request);
         JSONObject headers = requestStringToJsonHeaders(request);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "request");
@@ -32,12 +32,12 @@ public class LoggingFilter implements Filter {
         jsonObject.put("uri", request.getRequestURL());
         jsonObject.put("path", request.getServletPath());
         jsonObject.put("host", request.getRemoteHost());
-        jsonObject.put("body", body);
+        //jsonObject.put("body", body);
         jsonObject.put("headers", headers);
         logger.info(jsonObject.toString(4));
     }
 
-    private static JSONObject requestStringToJsonHeaders(ContentCachingRequestWrapper request) {
+    private static JSONObject requestStringToJsonHeaders(HttpServletRequest request) {
         JSONObject headers = new JSONObject();
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -48,7 +48,7 @@ public class LoggingFilter implements Filter {
         return headers;
     }
 
-    private static JSONObject responseStringToJsonHeaders(ContentCachingResponseWrapper response) {
+    private static JSONObject responseStringToJsonHeaders(HttpServletResponse response) {
         JSONObject headers = new JSONObject();
         Collection<String> headerNames = response.getHeaderNames();
         headerNames.forEach(headerName ->
@@ -85,13 +85,13 @@ public class LoggingFilter implements Filter {
         return null;
     }
 
-    private void responseLoggerBuilder(ContentCachingResponseWrapper response) {
-        JSONObject body = responseStringToJsonBody(response);
+    private void responseLoggerBuilder(HttpServletResponse response) {
+        //JSONObject body = responseStringToJsonBody(response);
         JSONObject headers = responseStringToJsonHeaders(response);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "response");
         jsonObject.put("status", response.getStatus());
-        jsonObject.put("body", body);
+        //jsonObject.put("body", body);
         jsonObject.put("headers", headers);
         jsonObject.put("duration: ", ((System.nanoTime() - this.startTime) / 1000000 + " ms"));
         logger.info(jsonObject.toString(4));
@@ -104,14 +104,14 @@ public class LoggingFilter implements Filter {
     ) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+        //ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
+        //ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
         try {
             this.startTime = System.nanoTime();
-            chain.doFilter(wrappedRequest, wrappedResponse);
+            chain.doFilter(request, response);
         } finally {
-            requestLoggerBuilder(wrappedRequest);
-            responseLoggerBuilder(wrappedResponse);
+            requestLoggerBuilder(request);
+            responseLoggerBuilder(response);
         }
     }
 }

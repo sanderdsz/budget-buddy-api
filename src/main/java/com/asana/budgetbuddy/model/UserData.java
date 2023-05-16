@@ -14,7 +14,7 @@ public class UserData extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User userId;
+    private User user;
 
     @Column(name = "password")
     private String password;
