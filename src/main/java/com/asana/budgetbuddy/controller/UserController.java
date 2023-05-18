@@ -2,24 +2,15 @@ package com.asana.budgetbuddy.controller;
 
 import com.asana.budgetbuddy.dto.UserDTO;
 import com.asana.budgetbuddy.dto.UserMapper;
-import com.asana.budgetbuddy.dto.UserRegistrationDTO;
 import com.asana.budgetbuddy.dto.UserUpdateDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.service.UserDataService;
 import com.asana.budgetbuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 @RestController
@@ -42,33 +33,11 @@ public class UserController {
         }
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDTO> save(@RequestBody UserRegistrationDTO userRegistration)
-            throws InvalidAlgorithmParameterException,
-            NoSuchPaddingException,
-            IllegalBlockSizeException,
-            NoSuchAlgorithmException,
-            InvalidKeySpecException,
-            BadPaddingException,
-            InvalidKeyException {
-        User user = userService.save(userRegistration);
-        UserData userData = userDataService.save(userRegistration, user);
-        UserDTO userDTO = UserMapper.toDTO(user, userData);
-        return ResponseEntity.ok(userDTO);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> put(
             @RequestBody UserUpdateDTO userUpdate,
             @PathVariable Long id
-    ) throws InvalidAlgorithmParameterException,
-            NoSuchPaddingException,
-            IllegalBlockSizeException,
-            NoSuchAlgorithmException,
-            InvalidKeySpecException,
-            BadPaddingException,
-            InvalidKeyException {
+    ) {
         Optional<User> currentUser = userService.getById(id);
         if (currentUser.isEmpty()) {
             return ResponseEntity.notFound().build();

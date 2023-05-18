@@ -36,7 +36,7 @@ public class UserDataService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("redis://default:398eb0340530405995382151eeab349c@us1-maximum-drake-38997.upstash.io:38997")
+    @Value("${redisUrl}")
     private String redisUrl;
 
     @Transactional
