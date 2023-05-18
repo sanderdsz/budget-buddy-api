@@ -8,6 +8,8 @@ import com.asana.budgetbuddy.util.JwtUtil;
 import com.asana.budgetbuddy.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
@@ -32,7 +34,7 @@ public class UserDataService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private PasswordUtil passwordUtil;
+    private PasswordEncoder passwordEncoder;
 
     @Value("redis://default:398eb0340530405995382151eeab349c@us1-maximum-drake-38997.upstash.io:38997")
     private String redisUrl;
@@ -43,20 +45,13 @@ public class UserDataService {
     }
 
     @Transactional
-    public UserData save(UserRegistrationDTO userRegistration, User user)
-            throws NoSuchAlgorithmException,
-            InvalidKeySpecException,
-            InvalidAlgorithmParameterException,
-            NoSuchPaddingException,
-            IllegalBlockSizeException,
-            BadPaddingException,
-            InvalidKeyException {
+    public UserData save(UserRegistrationDTO userRegistration, User user) {
         if (!userRegistration.isExternal()) {
             String refreshToken = jwtUtil.generateRefreshToken(user);
             UserData newUserData = UserData
                     .builder()
                     .user(user)
-                    .password(passwordUtil.generateEncryption(userRegistration.getPassword()))
+                    .password(passwordEncoder.encode(userRegistration.getPassword()))
                     .refreshToken(refreshToken)
                     .build();
             UserData savedUserData = repository.save(newUserData);
@@ -74,15 +69,8 @@ public class UserDataService {
     }
 
     @Transactional
-    public UserData update(User user, String password)
-            throws InvalidAlgorithmParameterException,
-            NoSuchPaddingException,
-            IllegalBlockSizeException,
-            NoSuchAlgorithmException,
-            InvalidKeySpecException,
-            BadPaddingException,
-            InvalidKeyException {
-        String newEncryption = passwordUtil.generateEncryption(password);
+    public UserData update(User user, String password) {
+        String newEncryption = passwordEncoder.encode(password);
         String refreshToken = jwtUtil.generateRefreshToken(user);
         Optional<UserData> currentUserData = repository.findByUser_Id(user.getId());
         currentUserData.get().setPassword(newEncryption);

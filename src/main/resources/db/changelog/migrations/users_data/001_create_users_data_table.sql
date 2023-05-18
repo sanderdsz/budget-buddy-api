@@ -2,7 +2,6 @@ CREATE TABLE users_data(
     id INT AUTO_INCREMENT,
     user_id INT,
     password VARCHAR(255),
-    refresh_token VARCHAR(255),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id, user_id),
