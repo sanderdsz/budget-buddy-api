@@ -17,8 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.params.Params;
+import redis.clients.jedis.params.SetParams;
+import redis.clients.jedis.params.XAddParams;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AuthService {
@@ -56,9 +60,11 @@ public class AuthService {
                 JedisPool pool = new JedisPool(redisUrl);
                 // tries a connection with redis to persist the email / refresh token
                 try (Jedis jedis = pool.getResource()) {
+                    SetParams params = new SetParams();
                     jedis.set(
-                            user.get().getEmail(),
-                            refreshToken
+                            "user:"+user.get().getEmail()+":email",
+                            refreshToken,
+                            params.ex(28800)
                     );
                 }
                 pool.close();
@@ -89,9 +95,11 @@ public class AuthService {
             JedisPool pool = new JedisPool(redisUrl);
             // tries a connection with redis to persist the email / refresh token
             try (Jedis jedis = pool.getResource()) {
+                SetParams params = new SetParams();
                 jedis.set(
-                        savedUser.getEmail(),
-                        refreshToken
+                        "user:"+user.get().getEmail()+":email",
+                        refreshToken,
+                        params.ex(28800)
                 );
             }
             pool.close();
