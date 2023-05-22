@@ -10,5 +10,5 @@ import lombok.*;
 public class TokenDTO {
 
     private String email;
-    private String refreshToken;
+    private String accessToken;
 }

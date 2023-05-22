@@ -38,19 +38,19 @@ public class UserDataService {
     @Transactional
     public UserData save(UserRegistrationDTO userRegistration, User user) {
         if (!userRegistration.isExternal()) {
-            String refreshToken = jwtUtil.generateRefreshToken(user);
+            String accessToken = jwtUtil.generateAccessToken(user);
             UserData newUserData = UserData
                     .builder()
                     .user(user)
                     .password(passwordEncoder.encode(userRegistration.getPassword()))
-                    .refreshToken(refreshToken)
+                    .accessToken(accessToken)
                     .build();
             UserData savedUserData = repository.save(newUserData);
             JedisPool pool = new JedisPool(redisUrl);
             try (Jedis jedis = pool.getResource()) {
                 jedis.set(
                         savedUserData.getId().toString(),
-                        refreshToken
+                        accessToken
                 );
             }
             pool.close();
@@ -62,16 +62,16 @@ public class UserDataService {
     @Transactional
     public UserData update(User user, String password) {
         String newEncryption = passwordEncoder.encode(password);
-        String refreshToken = jwtUtil.generateRefreshToken(user);
+        String accessToken = jwtUtil.generateAccessToken(user);
         Optional<UserData> currentUserData = repository.findByUser_Id(user.getId());
         currentUserData.get().setPassword(newEncryption);
-        currentUserData.get().setRefreshToken(refreshToken);
+        currentUserData.get().setAccessToken(accessToken);
         repository.save(currentUserData.get());
         JedisPool pool = new JedisPool(redisUrl);
         try (Jedis jedis = pool.getResource()) {
             jedis.set(
                     currentUserData.get().getId().toString(),
-                    refreshToken
+                    accessToken
             );
         }
         pool.close();

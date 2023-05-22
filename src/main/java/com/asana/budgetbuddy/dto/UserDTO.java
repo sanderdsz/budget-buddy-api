@@ -23,6 +23,6 @@ public class UserDTO {
 
     private UserParentDTO userParent;
 
-    private String refreshToken;
+    private String accessToken;
 
 }

@@ -20,5 +20,5 @@ public class UserData extends BaseEntity {
     private String password;
 
     @Transient
-    private String refreshToken;
+    private String accessToken;
 }

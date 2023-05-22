@@ -41,7 +41,7 @@ public class UserMapper {
                     .name(user.getName())
                     .email(user.getEmail())
                     .userParent(toParentDTO(user))
-                    .refreshToken(userData.getRefreshToken())
+                    .accessToken(userData.getAccessToken())
                     .build();
         } else if (user.getUserChildren() != null) {
             userDTO = UserDTO
@@ -50,7 +50,7 @@ public class UserMapper {
                     .name(user.getName())
                     .email(user.getEmail())
                     .userChildren(toChildrenDTO(user))
-                    .refreshToken(userData.getRefreshToken())
+                    .accessToken(userData.getAccessToken())
                     .build();
         } else {
             userDTO = UserDTO
@@ -58,13 +58,13 @@ public class UserMapper {
                     .id(user.getId())
                     .name(user.getName())
                     .email(user.getEmail())
-                    .refreshToken(userData.getRefreshToken())
+                    .accessToken(userData.getAccessToken())
                     .build();
         }
         return userDTO;
     }
 
-    public static UserDTO toDTOWithoutRefresh(User user) {
+    public static UserDTO toDTOWithoutAccess(User user) {
         return UserDTO
                     .builder()
                     .id(user.getId())

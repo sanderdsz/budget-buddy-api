@@ -74,12 +74,7 @@ public class JwtUtil {
     }
 
     private Optional<DecodedJWT> decodeRefreshToken(String token) {
-        try {
-            return Optional.of(refreshTokenVerifier.verify(token));
-        } catch (JWTVerificationException e) {
-            log.error("invalid refresh token", e);
-        }
-        return null;
+        return Optional.of(refreshTokenVerifier.verify(token));
     }
 
     public boolean validateAccessToken(String token) {
