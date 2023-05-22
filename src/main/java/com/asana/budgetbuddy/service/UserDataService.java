@@ -5,23 +5,14 @@ import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.repository.UserDataRepository;
 import com.asana.budgetbuddy.util.JwtUtil;
-import com.asana.budgetbuddy.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 @Service
@@ -36,7 +27,7 @@ public class UserDataService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${redisUrl}")
+    @Value("${REDIS_URL}")
     private String redisUrl;
 
     @Transactional

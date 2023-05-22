@@ -17,9 +17,9 @@ import java.util.Optional;
 @Component
 public class JwtUtil {
 
-    @Value("#{${accessTokenExpirationMinutes} * 60 * 1000}")
+    @Value("#{${ACCESS_TOKEN_EXPIRATION_MINUTES} * 60 * 1000}")
     private int accessTokenExpirationMs;
-    @Value("#{${refreshTokenExpirationMinutes} * 60 * 1000}")
+    @Value("#{${REFRESH_TOKEN_EXPIRATION_MINUTES} * 60 * 1000}")
     private int refreshTokenExpirationMs;
     static final String issuer = "jwt";
     private final Algorithm accessTokenAlgorithm;
@@ -28,10 +28,10 @@ public class JwtUtil {
     private final JWTVerifier refreshTokenVerifier;
 
     public JwtUtil(
-            @Value("${accessTokenSecret}")
+            @Value("${ACCESS_TOKEN_SECRET}")
             String accessTokenSecret,
 
-            @Value("${refreshTokenSecret}")
+            @Value("${REFRESH_TOKEN_EXPIRATION_MINUTES}")
             String refreshTokenSecret
     ) {
         accessTokenAlgorithm = Algorithm.HMAC512(accessTokenSecret);

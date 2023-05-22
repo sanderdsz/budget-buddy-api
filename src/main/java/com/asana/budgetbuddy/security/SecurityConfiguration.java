@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.config;
+package com.asana.budgetbuddy.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
