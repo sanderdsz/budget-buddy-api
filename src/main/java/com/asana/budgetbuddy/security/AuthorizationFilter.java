@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -18,36 +19,42 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * AuthorizationFilter will be invoked on every request.
+ * This class verify the Authorization token inside the header request.
+ */
 @Slf4j
 @Component
-public class AuthorizationFilter implements Filter {
+public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @Override
-    public void doFilter(
-            ServletRequest request,
-            ServletResponse response,
+    public void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
             FilterChain chain
     ) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        if (!req.getRequestURI().contains("/auth")) {
-            String token = req.getHeader("authorization");
+        // all requests that isn't to auth path will be verified
+        if (!request.getRequestURI().contains("/auth")) {
+            // the verification is the Authorization property in header
+            String token = request.getHeader("authorization");
             String access_token = token.replace("Basic ", "");
             try {
+                // verify the access token validation using jwt decrypt
                 boolean isValidToken = jwtUtil.validateAccessToken(access_token);
                 if (!isValidToken) {
+                    // if token is invalid, creates a JSON with java's standard error response
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("timestamp", LocalDateTime.now());
                     jsonObject.put("status", 401);
                     jsonObject.put("error", "Unauthorized");
                     jsonObject.put("message", "Invalid access token");
-                    jsonObject.put("path", req.getRequestURI());
+                    jsonObject.put("path", request.getRequestURI());
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     PrintWriter out = response.getWriter();
                     out.print(jsonObject);
                     return;
