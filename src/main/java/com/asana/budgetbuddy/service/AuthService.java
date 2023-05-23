@@ -53,16 +53,16 @@ public class AuthService {
                 JedisPool pool = new JedisPool(redisUrl);
                 String accessToken = null;
                 try (Jedis jedis = pool.getResource()) {
-                    // verify if there is a refresh token in redis
+                    // verify if there is an access token in redis
                     String existAccessToken = jedis.get("user:" + user.get().getEmail() + ":email");
                     if (existAccessToken != null) {
                         accessToken = existAccessToken;
                     } else {
-                        // generates a new refresh token
-                        accessToken = jwtUtil.generateRefreshToken(user.get());
-                        // set the refresh token to expire in 8 hours
+                        // generates a new access token
+                        accessToken = jwtUtil.generateAccessToken(user.get());
+                        // set the access token to expire in 8 hours
                         SetParams params = new SetParams();
-                        // persist the new refresh token into redis
+                        // persist the new access token into redis
                         jedis.set(
                                 "user:" + user.get().getEmail() + ":access_token",
                                 accessToken,
@@ -98,12 +98,12 @@ public class AuthService {
                     .password(passwordEncoder.encode(userRegistrationDTO.getPassword()))
                     .build();
             userDataRepository.save(newUserData);
-            // generates a new refresh token
-            String accessToken = jwtUtil.generateRefreshToken(savedUser);
+            // generates a new access token
+            String accessToken = jwtUtil.generateAccessToken(savedUser);
             JedisPool pool = new JedisPool(redisUrl);
-            // tries a connection with redis to persist the email / refresh token
+            // tries a connection with redis to persist the email / access token
             try (Jedis jedis = pool.getResource()) {
-                // set the refresh token to expire in 8 hours
+                // set the access token to expire in 8 hours
                 SetParams params = new SetParams();
                 jedis.set(
                         "user:" + user.get().getEmail() + ":access_token",

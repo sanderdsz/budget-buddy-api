@@ -68,13 +68,18 @@ public class JwtUtil {
         try {
             return Optional.of(accessTokenVerifier.verify(token));
         } catch (JWTVerificationException e) {
-            log.error("invalid access token: ", e.getMessage());
+            log.error(e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     private Optional<DecodedJWT> decodeRefreshToken(String token) {
-        return Optional.of(refreshTokenVerifier.verify(token));
+        try {
+            return Optional.of(refreshTokenVerifier.verify(token));
+        } catch (JWTVerificationException e) {
+            log.error(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     public boolean validateAccessToken(String token) {
