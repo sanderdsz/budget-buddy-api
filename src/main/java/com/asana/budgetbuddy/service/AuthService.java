@@ -119,4 +119,11 @@ public class AuthService {
             return tokenDTO;
         }
     }
+
+    public void logout(TokenDTO tokenDTO) {
+        JedisPool pool = new JedisPool(redisUrl);
+        try (Jedis jedis = pool.getResource()) {
+            jedis.del("user:" + tokenDTO.getEmail() + ":access_token");
+        }
+    }
 }
