@@ -106,7 +106,7 @@ public class AuthService {
                 // set the access token to expire in 8 hours
                 SetParams params = new SetParams();
                 jedis.set(
-                        "user:" + user.get().getEmail() + ":access_token",
+                        "user:" + newUser.getEmail() + ":access_token",
                         accessToken,
                         params.ex(28800)
                 );

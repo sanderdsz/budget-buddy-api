@@ -5,11 +5,10 @@ import com.asana.budgetbuddy.model.UserData;
 
 import java.util.Collection;
 
-/*
+/**
  * This class is a mapper for the DTO return of User class,
  * made to avoid infinite loop from the entity JSON return.
  */
-
 public class UserMapper {
 
     public static Collection<UserChildrenDTO> toChildrenDTO(User user) {

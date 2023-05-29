@@ -31,6 +31,10 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    /**
+     * The filter will trigger for each request that
+     * doesn't belong to the /auth endpoints.
+     */
     @Override
     public void doFilterInternal(
             HttpServletRequest request,
@@ -40,6 +44,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         // all requests that isn't to auth path will be verified
         if (!request.getRequestURI().contains("/auth")) {
             // the verification is the Authorization property in header
+            if (request.getHeader("authorization") == null) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                PrintWriter out = response.getWriter();
+                out.print(invalidTokenBuilder(request));
+                return;
+            }
             String token = request.getHeader("authorization");
             String access_token = token.replace("Basic ", "");
             try {
@@ -47,17 +59,11 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 boolean isValidToken = jwtUtil.validateAccessToken(access_token);
                 if (!isValidToken) {
                     // if token is invalid, creates a JSON with java's standard error response
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("timestamp", LocalDateTime.now());
-                    jsonObject.put("status", 401);
-                    jsonObject.put("error", "Unauthorized");
-                    jsonObject.put("message", "Invalid access token");
-                    jsonObject.put("path", request.getRequestURI());
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     PrintWriter out = response.getWriter();
-                    out.print(jsonObject);
+                    out.print(invalidTokenBuilder(request));
                     return;
                 }
             } catch (JWTVerificationException e) {
@@ -65,5 +71,20 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    /**
+     * Builds a JSON return for invalid token responses.
+     * @param request HttpServletRequest
+     * @return jsonObject JSON object made
+     */
+    public JSONObject invalidTokenBuilder(HttpServletRequest request) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("timestamp", LocalDateTime.now());
+        jsonObject.put("status", 401);
+        jsonObject.put("error", "Unauthorized");
+        jsonObject.put("message", "Invalid access token");
+        jsonObject.put("path", request.getRequestURI());
+        return jsonObject;
     }
 }

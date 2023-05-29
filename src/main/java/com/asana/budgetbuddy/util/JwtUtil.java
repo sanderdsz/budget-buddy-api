@@ -42,7 +42,7 @@ public class JwtUtil {
 
     /**
      * This creates both AccessToken and RefreshToken using the parameters above.
-     * @param user
+     * @param user User model
      * @return JWT (Json Web Token)
      */
     public String generateAccessToken(User user) {

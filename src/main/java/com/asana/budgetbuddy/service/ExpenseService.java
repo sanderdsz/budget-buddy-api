@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,5 +24,10 @@ public class ExpenseService {
     @Transactional
     public Optional<Expense> getById(Long id) {
         return expenseRepository.findById(id);
+    }
+
+    @Transactional
+    public List<Expense> getAllByUserEmail(String email) {
+        return expenseRepository.findAllByUser_Email(email);
     }
 }
