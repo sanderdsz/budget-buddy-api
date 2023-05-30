@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.asana</groupId>
-	<artifactId>budget-buddy</artifactId>
+	<artifactId>budget-buddy-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>budget-buddy</name>
 	<description>Budget Buddy</description>
