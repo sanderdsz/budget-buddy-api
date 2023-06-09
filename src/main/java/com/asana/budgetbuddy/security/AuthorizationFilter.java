@@ -8,17 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * AuthorizationFilter will be invoked on every request.
@@ -26,7 +20,7 @@ import java.util.Date;
  */
 @Slf4j
 @Component
-public class AuthorizationFilter extends OncePerRequestFilter {
+public class AuthorizationFilter implements Filter {
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -36,15 +30,17 @@ public class AuthorizationFilter extends OncePerRequestFilter {
      * doesn't belong to the /auth endpoints.
      */
     @Override
-    public void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public void doFilter(
+            ServletRequest req,
+            ServletResponse res,
             FilterChain chain
     ) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
         // all requests that isn't to auth path will be verified
         if (!request.getRequestURI().contains("/auth")) {
             // the verification is the Authorization property in header
-            if (request.getHeader("authorization") == null) {
+            if (request.getHeader("Authorization") == null) {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -52,7 +48,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 out.print(invalidTokenBuilder(request));
                 return;
             }
-            String token = request.getHeader("authorization");
+            String token = request.getHeader("Authorization");
             String access_token = token.replace("Basic ", "");
             try {
                 // verify the access token validation using jwt decrypt
@@ -75,6 +71,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     /**
      * Builds a JSON return for invalid token responses.
+     *
      * @param request HttpServletRequest
      * @return jsonObject JSON object made
      */

@@ -21,6 +21,9 @@ public class UserService {
     }
 
     @Transactional
+    public Optional<User> getByEmail(String email) { return userRepository.findByEmail(email); }
+
+    @Transactional
     public User save(UserRegistrationDTO userRegistration) {
         User newUser = User.builder()
                 .name(userRegistration.getName())

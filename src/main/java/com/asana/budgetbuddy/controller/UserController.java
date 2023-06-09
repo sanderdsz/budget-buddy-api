@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -23,9 +24,19 @@ public class UserController {
     @Autowired
     private UserDataService userDataService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<User> getById(@PathVariable Long id) {
         Optional<User> user = userService.getById(id);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getByEmail(@PathVariable String email) {
+        Optional<User> user = userService.getByEmail(email);
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
         } else {
