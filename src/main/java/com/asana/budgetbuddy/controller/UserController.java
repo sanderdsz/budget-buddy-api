@@ -34,10 +34,12 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getByEmail(@PathVariable String email) {
+    public ResponseEntity<UserDTO> getByEmail(@PathVariable String email) {
         Optional<User> user = userService.getByEmail(email);
         if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
+            Optional<UserData> userData = userDataService.getByUserId(user.get().getId());
+            UserDTO userDTO = UserMapper.toDTO(user.get(), userData.get());
+            return ResponseEntity.ok(userDTO);
         } else {
             return ResponseEntity.notFound().build();
         }

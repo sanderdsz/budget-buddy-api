@@ -36,6 +36,11 @@ public class UserDataService {
     }
 
     @Transactional
+    public Optional<UserData> getByUserId(Long id) {
+        return repository.findByUser_Id(id);
+    }
+
+    @Transactional
     public UserData save(UserRegistrationDTO userRegistration, User user) {
         if (!userRegistration.isExternal()) {
             String accessToken = jwtUtil.generateAccessToken(user);
