@@ -56,6 +56,9 @@ public class SecurityConfiguration {
                         (auth) -> auth
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/users/**").authenticated()
+                                .requestMatchers("/expenses/**").authenticated()
+                                .requestMatchers("/incomes/**").authenticated()
+                                .requestMatchers("/balances/**").authenticated()
                 )
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

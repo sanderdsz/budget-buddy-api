@@ -21,9 +21,9 @@ public class ExpenseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Expense save(@RequestBody Expense expense) {
+    public ResponseEntity save(@RequestBody Expense expense) {
         expenseService.save(expense);
-        return expense;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")

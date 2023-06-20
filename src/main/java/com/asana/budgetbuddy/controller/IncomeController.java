@@ -20,9 +20,9 @@ public class IncomeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Income save(@RequestBody Income income) {
+    public ResponseEntity save(@RequestBody Income income) {
         incomeService.save(income);
-        return income;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user")
