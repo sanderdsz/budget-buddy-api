@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findAllByUser_Email(String email);
+    List<Expense> findAllByUser_Id(Long id);
 }

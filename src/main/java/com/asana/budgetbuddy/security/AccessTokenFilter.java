@@ -35,7 +35,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             Optional<String> accessToken = parseAccessToken(request);
-            if(accessToken.isPresent() && jwtUtil.validateAccessToken(accessToken.get())) {
+            if (accessToken.isPresent() && jwtUtil.validateAccessToken(accessToken.get())) {
                 String userId = jwtUtil.getUserIdFromAccessToken(accessToken.get());
                 Optional<User> user = userService.getById(Long.parseLong(userId));
                 UsernamePasswordAuthenticationToken passwordAuthenticationToken =

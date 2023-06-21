@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
     List<Income> findAllByUser_Email(String email);
+    List<Income> findAllByUser_Id(Long id);
 }

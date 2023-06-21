@@ -4,6 +4,7 @@ import com.asana.budgetbuddy.dto.ExpenseDTO;
 import com.asana.budgetbuddy.dto.ExpenseMapper;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.service.ExpenseService;
+import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,23 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity save(@RequestBody Expense expense) {
         expenseService.save(expense);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ExpenseDTO>> getBalanceByUserId(@RequestHeader("Authorization") String accessToken) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        List<Expense> expenses = expenseService.getByUserId(Long.parseLong(userId));
+        List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+        return ResponseEntity.ok(expenseDTOS);
     }
 
     @GetMapping("/{id}")

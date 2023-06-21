@@ -24,4 +24,9 @@ public class IncomeService {
     public List<Income> getAllByUserEmail(String email) {
         return incomeRepository.findAllByUser_Email(email);
     }
+
+    @Transactional
+    public List<Income> getAllByUserId(Long id) {
+        return incomeRepository.findAllByUser_Id(id);
+    }
 }

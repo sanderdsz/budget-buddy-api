@@ -2,6 +2,8 @@ package com.asana.budgetbuddy.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -9,6 +11,6 @@ import lombok.*;
 @Builder
 public class BalanceDTO {
 
-    private double value;
+    private BigDecimal value;
 
 }

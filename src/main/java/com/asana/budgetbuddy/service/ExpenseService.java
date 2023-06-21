@@ -27,6 +27,11 @@ public class ExpenseService {
     }
 
     @Transactional
+    public List<Expense> getByUserId(Long id) {
+        return expenseRepository.findAllByUser_Id(id);
+    }
+
+    @Transactional
     public List<Expense> getAllByUserEmail(String email) {
         return expenseRepository.findAllByUser_Email(email);
     }

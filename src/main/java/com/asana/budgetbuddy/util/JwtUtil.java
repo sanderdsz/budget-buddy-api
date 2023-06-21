@@ -6,9 +6,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.Optional;
@@ -100,5 +102,17 @@ public class JwtUtil {
 
     public Long getTokenIdFromRefreshToken(String token) {
         return decodeRefreshToken(token).get().getClaim("tokenId").asLong();
+    }
+
+    /**
+     * Parse the Access Token from the request header and removes the Bearer from it
+     * @param accessToken
+     * @return String (Access Token)
+     */
+    public Optional<String> parseAccessToken(String accessToken) {
+        if(StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ")) {
+            return Optional.of(accessToken.replace("Bearer ", ""));
+        }
+        return Optional.empty();
     }
 }

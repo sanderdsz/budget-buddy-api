@@ -7,7 +7,9 @@ import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.service.UserDataService;
 import com.asana.budgetbuddy.service.UserService;
+import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,21 @@ public class UserController {
 
     @Autowired
     private UserDataService userDataService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @GetMapping
+    public ResponseEntity<User> getByUserId(@RequestHeader("Authorization") String accessToken) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.parseLong(userId));
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getById(@PathVariable Long id) {
