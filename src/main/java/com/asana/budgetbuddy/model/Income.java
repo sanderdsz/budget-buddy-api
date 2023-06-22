@@ -4,6 +4,8 @@ import com.asana.budgetbuddy.enums.IncomeType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Setter
 @Getter
@@ -22,4 +24,7 @@ public class Income extends BaseEntity{
 
     @Column(name = "income_type")
     private IncomeType incomeType;
+
+    @Column(name = "date")
+    private LocalDate date;
 }

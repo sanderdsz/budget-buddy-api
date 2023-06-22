@@ -16,7 +16,8 @@ public class UserMapper {
         Collection<UserChildrenDTO> userChildrenDTOS =
                 users.stream().map(userObj -> new UserChildrenDTO(
                         userObj.getId(),
-                        userObj.getName(),
+                        userObj.getFirstName(),
+                        userObj.getLastName(),
                         userObj.getEmail())
                 ).toList();
         return userChildrenDTOS;
@@ -25,7 +26,8 @@ public class UserMapper {
     public static UserParentDTO toParentDTO(User user) {
         UserParentDTO userParentDTO = new UserParentDTO(
                 user.getUserParent().getId(),
-                user.getUserParent().getName(),
+                user.getUserParent().getFirstName(),
+                user.getUserParent().getLastName(),
                 user.getUserParent().getEmail()
         );
         return userParentDTO;
@@ -37,7 +39,8 @@ public class UserMapper {
             userDTO = UserDTO
                     .builder()
                     .id(user.getId())
-                    .name(user.getName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
                     .email(user.getEmail())
                     .userParent(toParentDTO(user))
                     .accessToken(userData.getAccessToken())
@@ -46,7 +49,8 @@ public class UserMapper {
             userDTO = UserDTO
                     .builder()
                     .id(user.getId())
-                    .name(user.getName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
                     .email(user.getEmail())
                     .userChildren(toChildrenDTO(user))
                     .accessToken(userData.getAccessToken())
@@ -55,7 +59,8 @@ public class UserMapper {
             userDTO = UserDTO
                     .builder()
                     .id(user.getId())
-                    .name(user.getName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
                     .email(user.getEmail())
                     .accessToken(userData.getAccessToken())
                     .build();
@@ -67,7 +72,8 @@ public class UserMapper {
         return UserDTO
                     .builder()
                     .id(user.getId())
-                    .name(user.getName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
                     .email(user.getEmail())
                     .userChildren(toChildrenDTO(user))
                     .build();

@@ -1,6 +1,7 @@
 CREATE TABLE users(
     id INT AUTO_INCREMENT,
-    name VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
     email VARCHAR(255),
     is_external BOOLEAN,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

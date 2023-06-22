@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,28 +32,27 @@ public class ExpenseController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ExpenseDTO>> getBalanceByUserId(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<List<ExpenseDTO>> getExpenseByUserIdAndDateBetween(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
-        List<Expense> expenses = expenseService.getByUserId(Long.parseLong(userId));
-        List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
-        return ResponseEntity.ok(expenseDTOS);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Expense> getById(@PathVariable Long id) {
-        Optional<Expense> expense = expenseService.getById(id);
-        if (expense.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(expense.get());
+        if (year != null & month != null) {
+            List<Expense> expenses = expenseService.getAllByUserEmailAndYearAndMonth(Long.parseLong(userId), year, month);
+            List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+            return ResponseEntity.ok(expenseDTOS);
         }
-    }
-
-    @GetMapping("/user")
-    public ResponseEntity<List<ExpenseDTO>> getExpenseByUserEmail(@RequestParam String email) {
-        List<Expense> expenses = expenseService.getAllByUserEmail(email);
-        List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
-        return ResponseEntity.ok(expenseDTOS);
+        if (startDate != null & endDate != null) {
+            LocalDate parsedStartDate = LocalDate.parse(startDate);
+            LocalDate parsedEndDate = LocalDate.parse(endDate);
+            List<Expense> expenses = expenseService.getAllByUserEmailAndDateBetween(Long.parseLong(userId), parsedStartDate, parsedEndDate);
+            List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+            return ResponseEntity.ok(expenseDTOS);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

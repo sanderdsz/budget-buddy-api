@@ -11,7 +11,8 @@ public class IncomeMapper {
         List<IncomeDTO> incomeDTOS = incomes.stream()
                 .map(income -> new IncomeDTO(
                         income.getValue(),
-                        income.getIncomeType().toString()))
+                        income.getIncomeType().toString(),
+                        income.getDate()))
                 .toList();
         return incomeDTOS;
     }

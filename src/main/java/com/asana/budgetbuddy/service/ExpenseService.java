@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ExpenseService {
@@ -22,17 +22,14 @@ public class ExpenseService {
     }
 
     @Transactional
-    public Optional<Expense> getById(Long id) {
-        return expenseRepository.findById(id);
+    public List<Expense> getAllByUserEmailAndDateBetween(Long id, LocalDate startDate, LocalDate endDate) {
+        return expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
     }
 
     @Transactional
-    public List<Expense> getByUserId(Long id) {
-        return expenseRepository.findAllByUser_Id(id);
-    }
-
-    @Transactional
-    public List<Expense> getAllByUserEmail(String email) {
-        return expenseRepository.findAllByUser_Email(email);
+    public List<Expense> getAllByUserEmailAndYearAndMonth(Long id, Integer year, Integer month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
+        return expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
     }
 }

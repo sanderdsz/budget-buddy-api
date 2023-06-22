@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,23 +24,25 @@ public class BalanceService {
     private ExpenseRepository expenseRepository;
 
     @Transactional
-    public BalanceDTO getBalanceByEmail(String email) {
-        List<Income> incomes = incomeRepository.findAllByUser_Email(email);
-        List<Expense> expenses = expenseRepository.findAllByUser_Email(email);
+    public BalanceDTO getBalanceByUserIdAndYearAndMonth(Long id, Integer year, Integer month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
+        List<Income> incomes = incomeRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
+        List<Expense> expenses = expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
         double incomeSum = incomes.stream().mapToDouble(Income::getValue).sum();
         double expenseSum = expenses.stream().mapToDouble(Expense::getValue).sum();
-        BigDecimal scaledBalance = BigDecimal.valueOf(incomeSum - expenseSum).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal scaledBalance = BigDecimal.valueOf(incomeSum - expenseSum).setScale(2, RoundingMode.HALF_UP);
         BalanceDTO balanceDTO = new BalanceDTO(scaledBalance);
         return balanceDTO;
     }
 
     @Transactional
-    public BalanceDTO getBalanceByUserId(Long id) {
-        List<Income> incomes = incomeRepository.findAllByUser_Id(id);
-        List<Expense> expenses = expenseRepository.findAllByUser_Id(id);
+    public BalanceDTO getBalanceByUserIdAndDateBetween(Long id, LocalDate startDate, LocalDate endDate) {
+        List<Income> incomes = incomeRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
+        List<Expense> expenses = expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
         double incomeSum = incomes.stream().mapToDouble(Income::getValue).sum();
         double expenseSum = expenses.stream().mapToDouble(Expense::getValue).sum();
-        BigDecimal scaledBalance = BigDecimal.valueOf(incomeSum - expenseSum).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal scaledBalance = BigDecimal.valueOf(incomeSum - expenseSum).setScale(2, RoundingMode.HALF_UP);
         BalanceDTO balanceDTO = new BalanceDTO(scaledBalance);
         return balanceDTO;
     }

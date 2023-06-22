@@ -10,11 +10,9 @@ import lombok.*;
 public class UserRegistrationDTO {
 
     private String email;
-
     private String password;
-
-    private String name;
-
+    private String firstName;
+    private String lastName;
     private boolean isExternal;
 
 }

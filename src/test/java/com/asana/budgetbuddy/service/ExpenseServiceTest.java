@@ -45,7 +45,8 @@ public class ExpenseServiceTest {
     void shouldSave() {
         User user = new User();
         user.setId(1L);
-        user.setName("Lorem Ipsum");
+        user.setFirstName("Lorem");
+        user.setLastName("Ipsum");
         user.setEmail("lorem@ipsum.com");
 
         Expense expense = new Expense();

@@ -10,7 +10,8 @@ public class ExpenseMapper {
         List<ExpenseDTO> expenseDTOS = expenses.stream()
                 .map(expense -> new ExpenseDTO(
                         expense.getValue(),
-                        expense.getExpenseType().toString()))
+                        expense.getExpenseType().toString(),
+                        expense.getDate()))
                 .toList();
         return expenseDTOS;
     }

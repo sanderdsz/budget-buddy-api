@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,12 +22,14 @@ public class IncomeService {
     }
 
     @Transactional
-    public List<Income> getAllByUserEmail(String email) {
-        return incomeRepository.findAllByUser_Email(email);
+    public List<Income> getAllByUserEmailAndDateBetween(Long id, LocalDate startDate, LocalDate endDate) {
+        return incomeRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
     }
 
     @Transactional
-    public List<Income> getAllByUserId(Long id) {
-        return incomeRepository.findAllByUser_Id(id);
+    public List<Income> getAllByUserEmailAndYearAndMonth(Long id, Integer year, Integer month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
+        return incomeRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
     }
 }

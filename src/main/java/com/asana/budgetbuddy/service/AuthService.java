@@ -89,7 +89,8 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This e-mail is already registered");
         } else {
             User newUser = User.builder()
-                    .name(userRegistrationDTO.getName())
+                    .firstName(userRegistrationDTO.getFirstName())
+                    .lastName(userRegistrationDTO.getLastName())
                     .email(userRegistrationDTO.getEmail())
                     .isExternal(false)
                     .build();

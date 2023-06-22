@@ -26,7 +26,8 @@ public class UserService {
     @Transactional
     public User save(UserRegistrationDTO userRegistration) {
         User newUser = User.builder()
-                .name(userRegistration.getName())
+                .firstName(userRegistration.getFirstName())
+                .lastName(userRegistration.getLastName())
                 .email(userRegistration.getEmail())
                 .build();
         userRepository.save(newUser);
