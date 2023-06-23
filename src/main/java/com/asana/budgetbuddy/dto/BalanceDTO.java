@@ -9,8 +9,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class BalanceDTO {
 
-    private BigDecimal value;
+    private BigDecimal balance;
+    private BigDecimal expenses;
+    private BigDecimal incomes;
 
 }
