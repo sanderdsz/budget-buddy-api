@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.dto;
+package com.asana.budgetbuddy.dto.auth;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.dto;
+package com.asana.budgetbuddy.dto.user;
 
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;

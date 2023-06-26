@@ -1,7 +1,8 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.ExpenseDTO;
-import com.asana.budgetbuddy.dto.ExpenseMapper;
+import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
+import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
+import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.service.ExpenseService;
 import com.asana.budgetbuddy.util.JwtUtil;
@@ -29,6 +30,17 @@ public class ExpenseController {
     public ResponseEntity save(@RequestBody Expense expense) {
         expenseService.save(expense);
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/monthly")
+    public ResponseEntity<List<ExpenseMonthSummarizeDTO>> getMonthlySummarizedByTypeAndValue(@RequestHeader("Authorization") String accessToken) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            List<ExpenseMonthSummarizeDTO> summarizeDTOS = expenseService.getMonthlySummarizedByTypeAndValue(Long.valueOf(userId));
+            return ResponseEntity.ok(summarizeDTOS);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping()

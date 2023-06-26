@@ -1,7 +1,7 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.BalanceDTO;
-import com.asana.budgetbuddy.dto.BalanceWeeklyDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceWeeklyDTO;
 import com.asana.budgetbuddy.service.BalanceService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;

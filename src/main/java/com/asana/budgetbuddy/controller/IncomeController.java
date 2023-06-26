@@ -1,7 +1,7 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.IncomeDTO;
-import com.asana.budgetbuddy.dto.IncomeMapper;
+import com.asana.budgetbuddy.dto.income.IncomeDTO;
+import com.asana.budgetbuddy.dto.income.IncomeMapper;
 import com.asana.budgetbuddy.model.Income;
 import com.asana.budgetbuddy.service.IncomeService;
 import com.asana.budgetbuddy.util.JwtUtil;

@@ -1,7 +1,7 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.BalanceDTO;
-import com.asana.budgetbuddy.dto.BalanceWeeklyDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceWeeklyDTO;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.Income;
 import com.asana.budgetbuddy.repository.ExpenseRepository;

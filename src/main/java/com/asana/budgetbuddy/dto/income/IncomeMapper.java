@@ -1,6 +1,5 @@
-package com.asana.budgetbuddy.dto;
+package com.asana.budgetbuddy.dto.income;
 
-import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.Income;
 
 import java.util.List;

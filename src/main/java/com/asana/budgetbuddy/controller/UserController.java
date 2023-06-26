@@ -1,15 +1,14 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.UserDTO;
-import com.asana.budgetbuddy.dto.UserMapper;
-import com.asana.budgetbuddy.dto.UserUpdateDTO;
+import com.asana.budgetbuddy.dto.user.UserDTO;
+import com.asana.budgetbuddy.dto.user.UserMapper;
+import com.asana.budgetbuddy.dto.user.UserUpdateDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.service.UserDataService;
 import com.asana.budgetbuddy.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

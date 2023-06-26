@@ -1,8 +1,8 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.LoginDTO;
-import com.asana.budgetbuddy.dto.TokenDTO;
-import com.asana.budgetbuddy.dto.UserRegistrationDTO;
+import com.asana.budgetbuddy.dto.auth.LoginDTO;
+import com.asana.budgetbuddy.dto.auth.TokenDTO;
+import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
 import com.asana.budgetbuddy.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

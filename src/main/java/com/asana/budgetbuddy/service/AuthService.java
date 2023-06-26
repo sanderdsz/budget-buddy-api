@@ -1,8 +1,8 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.LoginDTO;
-import com.asana.budgetbuddy.dto.TokenDTO;
-import com.asana.budgetbuddy.dto.UserRegistrationDTO;
+import com.asana.budgetbuddy.dto.auth.LoginDTO;
+import com.asana.budgetbuddy.dto.auth.TokenDTO;
+import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.repository.UserDataRepository;
@@ -19,7 +19,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.SetParams;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j

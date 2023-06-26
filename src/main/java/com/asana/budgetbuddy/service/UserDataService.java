@@ -1,6 +1,6 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.UserRegistrationDTO;
+import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.repository.UserDataRepository;
