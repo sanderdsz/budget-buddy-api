@@ -100,7 +100,7 @@ public class ExpenseService {
     }
 
     private BigDecimal scaleValue(double value) {
-        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(value).setScale(0, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculatePercentage(List<Expense> expenses, List<Expense> expensesFiltered) {
