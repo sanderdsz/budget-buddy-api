@@ -8,6 +8,7 @@ import com.asana.budgetbuddy.model.UserData;
 import com.asana.budgetbuddy.repository.UserDataRepository;
 import com.asana.budgetbuddy.repository.UserRepository;
 import com.asana.budgetbuddy.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,29 +41,23 @@ public class AuthService {
     @Value("${REDIS_URL}")
     private String redisUrl;
 
+    @Transactional
     public TokenDTO login(LoginDTO dto) {
-        // verify the user in the database via email
         Optional<User> user = userRepository.findByEmail(dto.getEmail());
         if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found");
         } else {
-            // get the internal sensitive data from the user
             Optional<UserData> userData = userDataRepository.findByUser_Id(user.get().getId());
             if (passwordEncoder.matches(dto.getPassword(), userData.get().getPassword())) {
-                // create a new pool connection with redis
                 JedisPool pool = new JedisPool(redisUrl);
                 String accessToken = null;
                 try (Jedis jedis = pool.getResource()) {
-                    // verify if there is an access token in redis
                     String existAccessToken = jedis.get("user:" + user.get().getEmail() + ":email");
                     if (existAccessToken != null) {
                         accessToken = existAccessToken;
                     } else {
-                        // generates a new access token
                         accessToken = jwtUtil.generateAccessToken(user.get());
-                        // set the access token to expire in 8 hours
                         SetParams params = new SetParams();
-                        // persist the new access token into redis
                         jedis.set(
                                 "user:" + user.get().getEmail() + ":access_token",
                                 accessToken,
@@ -81,8 +76,8 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public TokenDTO save(UserRegistrationDTO userRegistrationDTO) {
-        // verify if there is already an email in the database
         Optional<User> user = userRepository.findByEmail(userRegistrationDTO.getEmail());
         if (user.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This e-mail is already registered");
@@ -99,12 +94,9 @@ public class AuthService {
                     .password(passwordEncoder.encode(userRegistrationDTO.getPassword()))
                     .build();
             userDataRepository.save(newUserData);
-            // generates a new access token
             String accessToken = jwtUtil.generateAccessToken(savedUser);
             JedisPool pool = new JedisPool(redisUrl);
-            // tries a connection with redis to persist the email / access token
             try (Jedis jedis = pool.getResource()) {
-                // set the access token to expire in 8 hours
                 SetParams params = new SetParams();
                 jedis.set(
                         "user:" + newUser.getEmail() + ":access_token",
@@ -121,10 +113,23 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public void logout(TokenDTO tokenDTO) {
         JedisPool pool = new JedisPool(redisUrl);
         try (Jedis jedis = pool.getResource()) {
             jedis.del("user:" + tokenDTO.getEmail() + ":access_token");
         }
+    }
+
+    @Transactional
+    public TokenDTO verify(TokenDTO tokenDTO) {
+        JedisPool pool = new JedisPool(redisUrl);
+        try (Jedis jedis = pool.getResource()) {
+            String accessToken = jedis.get("user:" + tokenDTO.getEmail() + ":access_token");
+            if (accessToken.compareTo(tokenDTO.getAccessToken()) != 0) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token invalid");
+            }
+        }
+        return tokenDTO;
     }
 }

@@ -32,4 +32,10 @@ public class AuthController {
         authService.logout(tokenDTO);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<TokenDTO> verify(@RequestBody TokenDTO tokenDTO) {
+        TokenDTO token = authService.verify(tokenDTO);
+        return ResponseEntity.ok(token);
+    }
 }

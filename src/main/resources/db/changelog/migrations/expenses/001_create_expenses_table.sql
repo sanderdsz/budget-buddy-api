@@ -4,6 +4,7 @@ CREATE TABLE expenses(
     value DECIMAL(15,2),
     expense_type VARCHAR(255),
     date DATE,
+    description VARCHAR(255),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id, user_id),

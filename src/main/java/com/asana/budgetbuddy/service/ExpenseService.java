@@ -99,15 +99,15 @@ public class ExpenseService {
         return expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
     }
 
-    private BigDecimal scaleValue(double value) {
-        return BigDecimal.valueOf(value).setScale(0, RoundingMode.HALF_UP);
+    private BigDecimal scaleValue(double value, int scale) {
+        return BigDecimal.valueOf(value).setScale(scale, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculatePercentage(List<Expense> expenses, List<Expense> expensesFiltered) {
         double totalResult = expenses.stream().mapToDouble(Expense::getValue).sum();
         double expensesFilteredResult = expensesFiltered.stream().mapToDouble(Expense::getValue).sum();
         double resultDifference = (expensesFilteredResult * 100) / totalResult;
-        return scaleValue(resultDifference);
+        return scaleValue(resultDifference, 0);
     }
 
     private ExpenseMonthSummarizeDTO monthSummarizeFactory(
@@ -118,6 +118,7 @@ public class ExpenseService {
         return ExpenseMonthSummarizeDTO.builder()
                 .expenses(ExpenseMapper.toDTO(expensesFiltered))
                 .expenseType(type.toString())
+                .totalValue(scaleValue(expensesFiltered.stream().mapToDouble(Expense::getValue).sum(), 2))
                 .percentage(calculatePercentage(expenses, expensesFiltered))
                 .build();
     }

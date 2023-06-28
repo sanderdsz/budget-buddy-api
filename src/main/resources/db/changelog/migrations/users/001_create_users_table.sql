@@ -3,6 +3,7 @@ CREATE TABLE users(
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     email VARCHAR(255),
+    avatar BLOB,
     is_external BOOLEAN,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

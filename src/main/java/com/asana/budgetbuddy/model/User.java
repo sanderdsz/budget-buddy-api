@@ -45,6 +45,10 @@ public class User extends BaseEntity implements UserDetails {
     )
     private User userParent;
 
+    @Lob
+    @Column(name = "avatar")
+    private byte[] avatar;
+
     @Column(name = "is_external")
     private boolean isExternal = false;
 

@@ -6,7 +6,9 @@ import com.asana.budgetbuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -38,5 +40,14 @@ public class UserService {
     public User update(User user) {
         userRepository.save(user);
         return user;
+    }
+
+    @Transactional
+    public User uploadAvatar(Long id, MultipartFile file) throws IOException {
+        byte[] avatar = file.getBytes();
+        Optional<User> user = userRepository.findById(id);
+        user.get().setAvatar(avatar);
+        userRepository.save(user.get());
+        return user.get();
     }
 }

@@ -47,12 +47,10 @@ public class BalanceService {
         List<LocalDate> week = new ArrayList<>();
         LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
         LocalDate lastDayOfMonth = LocalDate.of(year, month, firstDayOfMonth.lengthOfMonth());
-        /* the first date which initialize all the month days */
         LocalDate date = firstDayOfMonth;
         int weekNumber = 0;
         while (!date.isAfter(lastDayOfMonth)) {
             week.add(date);
-            /* check if the day is the last week day to wrap up the week into array */
             if (date.getDayOfWeek() == DayOfWeek.SUNDAY || date.equals(lastDayOfMonth)) {
                 weeksOfMonth.add(week);
                 week = new ArrayList<>();

@@ -1,6 +1,5 @@
 package com.asana.budgetbuddy.dto.expense;
 
-import com.asana.budgetbuddy.model.Expense;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -15,6 +14,7 @@ public class ExpenseMonthSummarizeDTO {
 
     private List<ExpenseDTO> expenses;
     private String expenseType;
+    private BigDecimal totalValue;
     private BigDecimal percentage;
 
 }
