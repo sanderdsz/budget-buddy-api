@@ -14,5 +14,6 @@ public class ExpenseDTO {
     private double value;
     private String expenseType;
     private LocalDate date;
+    private String description;
 
 }

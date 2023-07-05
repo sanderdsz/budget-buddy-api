@@ -27,4 +27,7 @@ public class Expense extends BaseEntity {
 
     @Column(name = "date")
     private LocalDate date;
+
+    @Column(name = "description")
+    private String description;
 }
