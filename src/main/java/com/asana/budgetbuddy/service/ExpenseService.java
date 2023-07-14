@@ -8,6 +8,8 @@ import com.asana.budgetbuddy.repository.ExpenseRepository;
 import com.asana.budgetbuddy.util.ExpenseFilter;
 import com.asana.budgetbuddy.util.ExpenseFilterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +99,26 @@ public class ExpenseService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
         return expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
+    }
+
+    @Transactional
+    public List<Expense> getAllByUserIdPageable(Long id, Pageable pageable) {
+        return expenseRepository.findAllByUser_IdOrderByDateDesc(id, pageable);
+    }
+
+    @Transactional
+    public List<Expense> getAllByUserIdAndExpenseTypePageable(Long id, ExpenseType expenseType, Pageable pageable) {
+        return expenseRepository.findAllByUser_IdAndExpenseTypeOrderByDateDesc(id, expenseType, pageable);
+    }
+
+    @Transactional
+    public List<Expense> getAllByUserIdAndDatePageable(Long id, LocalDate date, Pageable pageable) {
+        return expenseRepository.findAllByUser_IdAndDateOrderByDateDesc(id, date, pageable);
+    }
+
+    @Transactional
+    public List<Expense> getAllByUserIdAndDateAndExpenseTypePageable(Long id, LocalDate date, ExpenseType expenseType, Pageable pageable) {
+        return expenseRepository.findAllByUser_IdAndDateAndExpenseTypeOrderByDateDesc(id, date, expenseType, pageable);
     }
 
     private BigDecimal scaleValue(double value, int scale) {

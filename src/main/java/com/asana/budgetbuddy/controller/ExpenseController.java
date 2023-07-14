@@ -3,12 +3,15 @@ package com.asana.budgetbuddy.controller;
 import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
 import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
+import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.service.ExpenseService;
 import com.asana.budgetbuddy.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +45,47 @@ public class ExpenseController {
         Expense expense = ExpenseMapper.toModel(expenseDTO, user.get());
         expenseService.save(expense);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pageable")
+    public ResponseEntity<List<ExpenseDTO>> getAllPageable(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String expenseType,
+            @RequestParam(required = false) String date
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            PageRequest pageable = PageRequest.of(page, size);
+            List<Expense> expenses;
+            if (date != null & expenseType != null) {
+                expenses = expenseService.getAllByUserIdAndDateAndExpenseTypePageable(
+                        Long.parseLong(userId),
+                        LocalDate.parse(date),
+                        ExpenseType.valueOf(expenseType),
+                        pageable
+                );
+            } else if (expenseType != null) {
+                expenses = expenseService.getAllByUserIdAndExpenseTypePageable(
+                        Long.parseLong(userId),
+                        ExpenseType.valueOf(expenseType),
+                        pageable
+                );
+            } else if (date != null) {
+                expenses = expenseService.getAllByUserIdAndDatePageable(
+                        Long.parseLong(userId),
+                        LocalDate.parse(date),
+                        pageable
+                );
+            } else {
+                expenses = expenseService.getAllByUserIdPageable(Long.parseLong(userId), pageable);
+            }
+            List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+            return ResponseEntity.ok(expenseDTOS);
+        }
+        return ResponseEntity.notFound().build();
     }
     
     @GetMapping("/monthly")
