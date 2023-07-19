@@ -12,7 +12,6 @@ import com.asana.budgetbuddy.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -47,6 +46,35 @@ public class ExpenseController {
         Optional<User> user = userService.getById(Long.parseLong(userId));
         Expense expense = ExpenseMapper.toModel(expenseDTO, user.get());
         expenseService.save(expense);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity delete(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long id
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Expense expense = expenseService.getById(id);
+        if (Long.parseLong(userId) != expense.getUser().getId()) {
+            throw new UnauthorizedException();
+        }
+        expenseService.delete(expense.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity put(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody ExpenseDTO expenseDTO
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.parseLong(userId));
+        expenseService.put(expenseDTO, user.get());
         return ResponseEntity.ok().build();
     }
 
@@ -105,7 +133,7 @@ public class ExpenseController {
         }
         return ResponseEntity.notFound().build();
     }
-    
+
     @GetMapping("/monthly")
     public ResponseEntity<List<ExpenseMonthSummarizeDTO>> getMonthlySummarizedByTypeAndValue(@RequestHeader("Authorization") String accessToken) {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);

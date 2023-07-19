@@ -6,11 +6,11 @@ import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Expense;
+import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.repository.ExpenseRepository;
 import com.asana.budgetbuddy.util.ExpenseFilter;
 import com.asana.budgetbuddy.util.ExpenseFilterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +36,32 @@ public class ExpenseService {
     public Expense save(Expense expense) {
         expenseRepository.save(expense);
         return expense;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        expenseRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Expense put(ExpenseDTO expenseDTO, User user) {
+        Expense newExpense = null;
+        try {
+            Optional<Expense> expense = expenseRepository.findById(expenseDTO.getId());
+            if (expense.isPresent()) {
+                newExpense = ExpenseMapper.toModel(expenseDTO, user);
+                newExpense.setId(expenseDTO.getId());
+                newExpense.setUser(user);
+                newExpense.setDate(expenseDTO.getDate());
+                newExpense.setValue(expenseDTO.getValue());
+                newExpense.setExpenseType(ExpenseType.valueOf(expenseDTO.getExpenseType()));
+                newExpense.setDescription(expenseDTO.getDescription());
+                expenseRepository.save(newExpense);
+            }
+        } catch (NoSuchElementException e) {
+            throw new EntityNotFoundException("Expense not found");
+        }
+        return newExpense;
     }
 
     @Transactional
