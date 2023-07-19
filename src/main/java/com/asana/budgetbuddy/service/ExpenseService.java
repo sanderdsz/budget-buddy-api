@@ -1,8 +1,10 @@
 package com.asana.budgetbuddy.service;
 
+import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
 import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
 import com.asana.budgetbuddy.enums.ExpenseType;
+import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.repository.ExpenseRepository;
 import com.asana.budgetbuddy.util.ExpenseFilter;
@@ -18,6 +20,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ExpenseService {
@@ -32,6 +36,16 @@ public class ExpenseService {
     public Expense save(Expense expense) {
         expenseRepository.save(expense);
         return expense;
+    }
+
+    @Transactional
+    public Expense getById(Long id) {
+        try {
+            Optional<Expense> expense = expenseRepository.findById(id);
+            return expense.get();
+        } catch (NoSuchElementException e) {
+            throw new EntityNotFoundException("Expense not found");
+        }
     }
 
     @Transactional

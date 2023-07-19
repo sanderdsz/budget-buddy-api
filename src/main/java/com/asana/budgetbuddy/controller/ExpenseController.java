@@ -4,6 +4,7 @@ import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
 import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
 import com.asana.budgetbuddy.enums.ExpenseType;
+import com.asana.budgetbuddy.exception.UnauthorizedException;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.service.ExpenseService;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/expenses")
+@Validated
 public class ExpenseController {
 
     @Autowired
@@ -45,6 +48,21 @@ public class ExpenseController {
         Expense expense = ExpenseMapper.toModel(expenseDTO, user.get());
         expenseService.save(expense);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long id
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Expense expense = expenseService.getById(id);
+        if (Long.parseLong(userId) != expense.getUser().getId()) {
+            throw new UnauthorizedException();
+        }
+        ExpenseDTO dto = ExpenseMapper.toDTOSingle(expense);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/pageable")

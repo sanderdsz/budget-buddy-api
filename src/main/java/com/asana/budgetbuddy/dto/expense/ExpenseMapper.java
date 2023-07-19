@@ -8,9 +8,21 @@ import java.util.List;
 
 public class ExpenseMapper {
 
+    public static ExpenseDTO toDTOSingle(Expense expense) {
+        ExpenseDTO expenseDTO = ExpenseDTO.builder()
+                .id(expense.getId())
+                .value(expense.getValue())
+                .expenseType(expense.getExpenseType().toString())
+                .date(expense.getDate())
+                .description(expense.getDescription())
+                .build();
+        return expenseDTO;
+    }
+
     public static List<ExpenseDTO> toDTO(List<Expense> expenses) {
         List<ExpenseDTO> expenseDTOS = expenses.stream()
                 .map(expense -> new ExpenseDTO(
+                        expense.getId(),
                         expense.getValue(),
                         expense.getExpenseType().toString(),
                         expense.getDate(),
