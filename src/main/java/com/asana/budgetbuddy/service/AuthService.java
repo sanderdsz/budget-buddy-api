@@ -126,6 +126,9 @@ public class AuthService {
         JedisPool pool = new JedisPool(redisUrl);
         try (Jedis jedis = pool.getResource()) {
             String accessToken = jedis.get("user:" + tokenDTO.getEmail() + ":access_token");
+            if (accessToken == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token expired");
+            }
             if (accessToken.compareTo(tokenDTO.getAccessToken()) != 0) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token invalid");
             }

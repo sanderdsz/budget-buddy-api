@@ -2,10 +2,14 @@ package com.asana.budgetbuddy.controller;
 
 import com.asana.budgetbuddy.dto.income.IncomeDTO;
 import com.asana.budgetbuddy.dto.income.IncomeMapper;
+import com.asana.budgetbuddy.enums.IncomeType;
 import com.asana.budgetbuddy.model.Income;
+import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.service.IncomeService;
+import com.asana.budgetbuddy.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +26,64 @@ public class IncomeController {
     private IncomeService incomeService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity save(@RequestBody Income income) {
+    public ResponseEntity save(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody IncomeDTO incomeDTO
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.valueOf(userId));
+        Income income = IncomeMapper.toModel(incomeDTO, user.get());
         incomeService.save(income);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pageable")
+    public ResponseEntity<List<IncomeDTO>> getAllPageable(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String incomeType,
+            @RequestParam(required = false) String date
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            PageRequest pageable = PageRequest.of(page, size);
+            List<Income> incomes;
+            if (date != null & incomeType != null) {
+                incomes = incomeService.getAllByUserIdAndDateAndIncomeTypePageable(
+                        Long.parseLong(userId),
+                        LocalDate.parse(date),
+                        IncomeType.valueOf(incomeType),
+                        pageable
+                );
+            } else if (date != null) {
+                incomes = incomeService.getAllByUserIdAndDatePageable(
+                        Long.parseLong(userId),
+                        LocalDate.parse(date),
+                        pageable
+                );
+            } else if (incomeType != null) {
+                incomes = incomeService.getAllByUserIdAndIncomeTypePageable(
+                        Long.parseLong(userId),
+                        IncomeType.valueOf(incomeType),
+                        pageable
+                );
+            } else {
+                incomes = incomeService.getAllByUserIdPageable(Long.parseLong(userId), pageable);
+            }
+            List<IncomeDTO> incomeDTOS = IncomeMapper.toDTO(incomes);
+            return ResponseEntity.ok(incomeDTOS);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping()

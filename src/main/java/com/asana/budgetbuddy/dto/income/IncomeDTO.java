@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class IncomeDTO {
 
     private double value;
-    private String expenseType;
+    private String incomeType;
     private LocalDate date;
 
 }

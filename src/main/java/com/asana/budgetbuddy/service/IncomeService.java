@@ -1,8 +1,10 @@
 package com.asana.budgetbuddy.service;
 
+import com.asana.budgetbuddy.enums.IncomeType;
 import com.asana.budgetbuddy.model.Income;
 import com.asana.budgetbuddy.repository.IncomeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +33,25 @@ public class IncomeService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
         return incomeRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
+    }
+
+    @Transactional
+    public List<Income> getAllByUserIdAndDateAndIncomeTypePageable(Long id, LocalDate date, IncomeType incomeType, Pageable pageable) {
+        return incomeRepository.findAllByUser_IdAndDateAndIncomeTypeOrderByDateDesc(id, date, incomeType, pageable);
+    }
+
+    @Transactional
+    public List<Income> getAllByUserIdAndIncomeTypePageable(Long id, IncomeType incomeType, Pageable pageable) {
+        return incomeRepository.findAllByUser_IdAndIncomeTypeOrderByDateDesc(id, incomeType, pageable);
+    }
+
+    @Transactional
+    public List<Income> getAllByUserIdAndDatePageable(Long id, LocalDate date, Pageable pageable) {
+        return incomeRepository.findAllByUser_IdAndDateOrderByDateDesc(id, date, pageable);
+    }
+
+    @Transactional
+    public List<Income> getAllByUserIdPageable(Long id, Pageable pageable) {
+        return incomeRepository.findAllByUser_IdOrderByDateDesc(id, pageable);
     }
 }
