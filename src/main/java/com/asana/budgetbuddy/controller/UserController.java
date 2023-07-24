@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.controller;
 
+import com.asana.budgetbuddy.dto.user.UserChildrenDTO;
 import com.asana.budgetbuddy.dto.user.UserDTO;
 import com.asana.budgetbuddy.dto.user.UserMapper;
 import com.asana.budgetbuddy.dto.user.UserUpdateDTO;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Optional;
 
 @RestController
@@ -67,7 +69,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUserByUserId(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<UserDTO> getUserByUserId(
+            @RequestHeader("Authorization") String accessToken
+    ) {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
         Optional<User> user = userService.getById(Long.valueOf(userId));
@@ -80,12 +84,29 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> put(
-            @RequestBody UserUpdateDTO userUpdate,
-            @PathVariable Long id
+    @GetMapping("/connected")
+    public ResponseEntity<Collection<UserChildrenDTO>> getConnectedById(
+            @RequestHeader("Authorization") String accessToken
     ) {
-        Optional<User> currentUser = userService.getById(id);
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.valueOf(userId));
+        if (user.isPresent()) {
+            Collection<UserChildrenDTO> userChildrenDTOList = UserMapper.toChildrenDTO(user.get());
+            return ResponseEntity.ok(userChildrenDTOList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity<UserDTO> put(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody UserUpdateDTO userUpdate
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> currentUser = userService.getById(Long.parseLong(userId));
         if (currentUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
@@ -101,7 +122,7 @@ public class UserController {
     @PostMapping("/avatar")
     public ResponseEntity<User> uploadAvatar(
             @RequestHeader("Authorization") String accessToken,
-            @RequestParam("file")MultipartFile file
+            @RequestParam("file") MultipartFile file
     ) throws IOException {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
