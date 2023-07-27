@@ -161,6 +161,25 @@ public class ExpenseService {
         return expenseRepository.findAllByUser_IdAndDateAndExpenseTypeOrderByDateDesc(id, date, expenseType, pageable);
     }
 
+    @Transactional
+    public List<Expense> getAllUsersChildrenExpenses(List<Long> ids, LocalDate date, ExpenseType expenseType, Pageable pageable) {
+        List<Expense> expenseList = new ArrayList<>();
+        List<Expense> expenses;
+        for (Long id : ids) {
+            if (date != null & expenseType != null) {
+                expenses = expenseRepository.findAllByUser_IdAndDateAndExpenseTypeOrderByDateDesc(id, date, expenseType, pageable);
+            } else if (date != null) {
+                expenses = expenseRepository.findAllByUser_IdAndDateOrderByDateDesc(id, date, pageable);
+            } else if (expenseType != null) {
+                expenses = expenseRepository.findAllByUser_IdAndExpenseTypeOrderByDateDesc(id, expenseType, pageable);
+            } else {
+                expenses = expenseRepository.findAllByUser_IdOrderByDateDesc(id, pageable);
+            }
+            expenseList.addAll(expenses);
+        }
+        return expenseList;
+    }
+
     private BigDecimal scaleValue(double value, int scale) {
         return BigDecimal.valueOf(value).setScale(scale, RoundingMode.HALF_UP);
     }

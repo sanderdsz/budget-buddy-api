@@ -1,6 +1,5 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.user.UserChildrenDTO;
 import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
 import com.asana.budgetbuddy.model.User;
 import com.asana.budgetbuddy.repository.UserRepository;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,9 +21,6 @@ public class UserService {
     public Optional<User> getById(Long id) {
         return userRepository.findById(id);
     }
-
-    @Transactional
-    public Optional<User> getByEmail(String email) { return userRepository.findByEmail(email); }
 
     @Transactional
     public User save(UserRegistrationDTO userRegistration) {

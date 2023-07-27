@@ -18,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -168,5 +170,34 @@ public class ExpenseController {
             return ResponseEntity.ok(expenseDTOS);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/connected")
+    public ResponseEntity<List<ExpenseDTO>> getAllUsersChildrenExpenses(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String expenseType,
+            @RequestParam(required = false) String date
+    ) {
+        List<Long> ids = new ArrayList<>();
+        PageRequest pageable = PageRequest.of(page, size);
+        ExpenseType expenseTypeParsed = null;
+        LocalDate dateParsed = null;
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.parseLong(userId));
+        user.get().getUserChildren().forEach(userChildren -> ids.add(userChildren.getId()));
+        if (date != null & expenseType != null) {
+            expenseTypeParsed = ExpenseType.valueOf(expenseType);
+            dateParsed = LocalDate.parse(date);
+        } else if (expenseType != null) {
+            expenseTypeParsed = ExpenseType.valueOf(expenseType);
+        } else if (date != null) {
+            dateParsed = LocalDate.parse(date);
+        }
+        List<Expense> expenses = expenseService.getAllUsersChildrenExpenses(ids, dateParsed, expenseTypeParsed, pageable);
+        List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+        return ResponseEntity.ok(expenseDTOS);
     }
 }

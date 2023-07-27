@@ -46,28 +46,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
-        Optional<User> user = userService.getById(id);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDTO> getByEmail(@PathVariable String email) {
-        Optional<User> user = userService.getByEmail(email);
-        if (user.isPresent()) {
-            Optional<UserData> userData = userDataService.getByUserId(user.get().getId());
-            UserDTO userDTO = UserMapper.toDTO(user.get(), userData.get());
-            return ResponseEntity.ok(userDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getUserByUserId(
             @RequestHeader("Authorization") String accessToken
