@@ -38,3 +38,8 @@ databaseChangeLog:
            encoding: utf8
            path: changelog/migrations/incomes/001_create_incomes_table.sql
            relativeToChangelogFile: true
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: changelog/migrations/users_connection_requests/001_create_users_connection_requests_table.sql
+            relativeToChangelogFile: true

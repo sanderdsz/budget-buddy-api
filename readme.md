@@ -56,7 +56,7 @@ a refresh_token, when the OAUTH flow implement's it, should be wise to change th
 - [x] GET all incomes.
 - [x] Income date and type filters.
 - [x] Incomes pagination.
-- 
+
 ### Balances
 
 - [x] GET balance by period.

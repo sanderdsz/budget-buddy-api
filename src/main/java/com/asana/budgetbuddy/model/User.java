@@ -52,6 +52,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "is_external")
     private boolean isExternal = false;
 
+    @Column(name = "is_admin")
+    private boolean isAdmin = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.EMPTY_LIST;

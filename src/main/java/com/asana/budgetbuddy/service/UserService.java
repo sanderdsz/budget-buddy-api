@@ -1,14 +1,22 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
+import com.asana.budgetbuddy.dto.user.UserConnectionDTO;
+import com.asana.budgetbuddy.dto.user.UserMapper;
+import com.asana.budgetbuddy.dto.user.UserUpdateDTO;
 import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.model.UserConnectionRequest;
+import com.asana.budgetbuddy.repository.UserConnectionRequestRepository;
 import com.asana.budgetbuddy.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,20 +25,36 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserConnectionRequestRepository userConnectionRequestRepository;
+
     @Transactional
     public Optional<User> getById(Long id) {
         return userRepository.findById(id);
     }
 
     @Transactional
-    public User save(UserRegistrationDTO userRegistration) {
-        User newUser = User.builder()
-                .firstName(userRegistration.getFirstName())
-                .lastName(userRegistration.getLastName())
-                .email(userRegistration.getEmail())
-                .build();
-        userRepository.save(newUser);
-        return newUser;
+    public Optional<User> getByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public Collection<UserConnectionDTO> getAllConnections(Long id) {
+        Collection<UserConnectionDTO> userConnections = new ArrayList<>();
+        User user = userRepository.findById(id).get();
+        Collection<UserConnectionDTO> userConnectionByUserDTOS = UserMapper.toUserConnectionByUserDTO(user);
+        List<UserConnectionRequest> userConnectionRequestsByParent = userConnectionRequestRepository.findAllByUserParent_IdOrderByCreatedAtDesc(id);
+        Collection<UserConnectionDTO> userConnectionByParentDTOS = UserMapper.toUserConnectionByParentDTO(
+                userConnectionRequestsByParent
+        );
+        List<UserConnectionRequest> userConnectionRequestsByChildren = userConnectionRequestRepository.findAllByUserChildren_IdOrderByCreatedAtDesc(id);
+        Collection<UserConnectionDTO> userConnectionByChildrenDTOS = UserMapper.toUserConnectionByChildrenDTO(
+                userConnectionRequestsByChildren
+        );
+        userConnections.addAll(userConnectionByUserDTOS);
+        userConnections.addAll(userConnectionByChildrenDTOS);
+        userConnections.addAll(userConnectionByParentDTOS);
+        return userConnections;
     }
 
     @Transactional
