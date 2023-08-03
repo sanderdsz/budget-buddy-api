@@ -63,6 +63,10 @@ a refresh_token, when the OAUTH flow implement's it, should be wise to change th
 - [x] GET balance by date and year.
 - [x] GET balance by weeks.
 
+### Import
+
+- [x] Endpoint to import xlsx file for expenses and incomes.
+
 ### Login Chart
 
 ![Login Chart](.github/budget-buddy-login.png)
