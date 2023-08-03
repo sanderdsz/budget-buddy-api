@@ -59,6 +59,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/expenses/**").authenticated()
                                 .requestMatchers("/incomes/**").authenticated()
                                 .requestMatchers("/balances/**").authenticated()
+                                .requestMatchers("/import/**").authenticated()
                                 .requestMatchers("/error").permitAll()
                 )
                 .sessionManagement()
