@@ -16,4 +16,5 @@ public class ImportFileDTO {
     private String entry;
     private String type;
     private Date date;
+    private String description;
 }

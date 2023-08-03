@@ -87,6 +87,7 @@ public class ImportController {
                         case 1 -> importFile.setEntry(currentCell.getStringCellValue());
                         case 2 -> importFile.setType(currentCell.getStringCellValue());
                         case 3 -> importFile.setDate(currentCell.getDateCellValue());
+                        case 4 -> importFile.setDescription(currentCell.getStringCellValue());
                         default -> {
                         }
                     }
@@ -104,6 +105,7 @@ public class ImportController {
                             .value(importFileDTO.getValue())
                             .expenseType(ExpenseType.valueOf(importFileDTO.getType().toUpperCase()))
                             .date(dateConversion)
+                            .description(importFileDTO.getDescription())
                             .build();
                     expenseService.save(expense);
                 }
