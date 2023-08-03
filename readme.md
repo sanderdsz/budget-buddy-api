@@ -17,7 +17,9 @@ This project aims to create a complete application which manages the income's an
 - [x] PUT avatar file.
 - [x] GET user details.
 - [x] GET token verification and validation.
-- [ ] GET users connected based between parent and children.
+- [x] Retrieve the connection accepted and requested into a single list.
+- [x] Accept a new connection between users.
+- [x] Cancel a connection between users.
 
 ## GitHub Flow
 
