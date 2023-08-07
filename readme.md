@@ -64,6 +64,21 @@ a refresh_token, when the OAUTH flow implement's it, should be wise to change th
 - [x] GET balance by period.
 - [x] GET balance by date and year.
 - [x] GET balance by weeks.
+- [x] GET balance by monthly.
+
+### Investments
+
+- [ ] POST new investment.
+- [ ] PUT investment.
+- [ ] GET annual investment.
+- [ ] GET monthly investment.
+
+### Withdraws
+
+- [ ] POST new withdraw.
+- [ ] PUT withdraw.
+- [ ] GET annual withdraw.
+- [ ] GET monthly withdraw.
 
 ### Import
 

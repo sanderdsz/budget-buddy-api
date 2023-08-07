@@ -162,7 +162,12 @@ public class ExpenseService {
     }
 
     @Transactional
-    public List<Expense> getAllUsersChildrenExpenses(List<Long> ids, LocalDate date, ExpenseType expenseType, Pageable pageable) {
+    public List<Expense> getAllUsersChildrenExpenses(
+            List<Long> ids,
+            LocalDate date,
+            ExpenseType expenseType,
+            Pageable pageable
+    ) {
         List<Expense> expenseList = new ArrayList<>();
         List<Expense> expenses;
         for (Long id : ids) {

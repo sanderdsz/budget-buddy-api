@@ -115,6 +115,7 @@ public class ImportController {
                             .value(importFileDTO.getValue())
                             .incomeType(IncomeType.valueOf(importFileDTO.getType().toUpperCase()))
                             .date(dateConversion)
+                            .description(importFileDTO.getDescription())
                             .build();
                     incomeService.save(income);
                 }

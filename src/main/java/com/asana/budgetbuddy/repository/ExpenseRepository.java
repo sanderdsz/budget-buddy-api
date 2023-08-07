@@ -18,4 +18,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findAllByUser_IdAndExpenseTypeOrderByDateDesc(Long id, ExpenseType expenseType, Pageable pageable);
     List<Expense> findAllByUser_IdAndDateOrderByDateDesc(Long id, LocalDate date, Pageable pageable);
     List<Expense> findAllByUser_IdAndDateAndExpenseTypeOrderByDateDesc(Long id, LocalDate date, ExpenseType expenseType, Pageable pageable);
+    List<Expense> findAllByUser_IdAndUser_UserChildren_IdAndDateAndExpenseTypeOrderByDateDesc(Long id, Long childId, LocalDate date, ExpenseType expenseType, Pageable pageable);
 }

@@ -8,6 +8,19 @@ import java.util.List;
 
 public class ExpenseMapper {
 
+    public static List<ExpenseConnectedDTO> toDTOConnected(List<Expense> expenses) {
+        List<ExpenseConnectedDTO> expenseDTOS = expenses.stream()
+                .map(expense -> new ExpenseConnectedDTO(
+                        expense.getId(),
+                        expense.getValue(),
+                        expense.getExpenseType().toString(),
+                        expense.getDate(),
+                        expense.getDescription(),
+                        expense.getUser().getFirstName()))
+                .toList();
+        return expenseDTOS;
+    }
+
     public static ExpenseDTO toDTOSingle(Expense expense) {
         ExpenseDTO expenseDTO = ExpenseDTO.builder()
                 .id(expense.getId())

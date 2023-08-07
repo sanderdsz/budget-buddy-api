@@ -13,7 +13,8 @@ public class IncomeMapper {
                 .map(income -> new IncomeDTO(
                         income.getValue(),
                         income.getIncomeType().toString(),
-                        income.getDate()))
+                        income.getDate(),
+                        income.getDescription()))
                 .toList();
         return incomeDTOS;
     }
@@ -24,6 +25,7 @@ public class IncomeMapper {
                 .value(incomeDTO.getValue())
                 .incomeType(IncomeType.valueOf(incomeDTO.getIncomeType()))
                 .date(incomeDTO.getDate())
+                .description(incomeDTO.getDescription())
                 .build();
         return income;
     }

@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.dto.income;
+package com.asana.budgetbuddy.dto.expense;
 
 import lombok.*;
 
@@ -9,11 +9,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class IncomeDTO {
-
+public class ExpenseConnectedDTO {
+    private Long id;
     private double value;
-    private String incomeType;
+    private String expenseType;
     private LocalDate date;
     private String description;
-
+    private String userName;
 }

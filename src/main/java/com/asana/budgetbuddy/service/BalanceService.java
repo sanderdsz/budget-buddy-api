@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.service;
 
 import com.asana.budgetbuddy.dto.balance.BalanceDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceMonthlyDTO;
 import com.asana.budgetbuddy.dto.balance.BalanceWeeklyDTO;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.Income;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class BalanceService {
     public List<BalanceWeeklyDTO> getWeeklyBalanceByUserId(Long id) {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        List <BalanceWeeklyDTO> balanceWeekly = new ArrayList<>();
+        List<BalanceWeeklyDTO> balanceWeekly = new ArrayList<>();
         List<List<LocalDate>> weeksOfMonth = new ArrayList<>();
         List<LocalDate> week = new ArrayList<>();
         LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
@@ -72,6 +74,26 @@ public class BalanceService {
             balanceWeekly.add(balanceWeeklyDTO);
         }
         return balanceWeekly;
+    }
+
+    @Transactional
+    public List<BalanceMonthlyDTO> getMonthlyBalanceByUserId(Long id) {
+        List<BalanceMonthlyDTO> balanceMonthly = new ArrayList<>();
+        int year = LocalDate.now().getYear();
+        for (Month month : Month.values()) {
+            LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+            LocalDate lastDayOfMonth = LocalDate.of(year, month, firstDayOfMonth.lengthOfMonth());
+            BalanceDTO balance = calculateBalance(id, firstDayOfMonth, lastDayOfMonth);
+            BalanceMonthlyDTO monthlyDTO = BalanceMonthlyDTO
+                    .builder()
+                    .monthBalance(balance)
+                    .month(month.getValue())
+                    .startDate(firstDayOfMonth)
+                    .endDate(lastDayOfMonth)
+                    .build();
+            balanceMonthly.add(monthlyDTO);
+        }
+        return balanceMonthly;
     }
 
     private BalanceDTO calculateBalance(Long id, LocalDate startDate, LocalDate endDate) {

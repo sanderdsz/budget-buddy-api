@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.controller;
 
+import com.asana.budgetbuddy.dto.expense.ExpenseConnectedDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
 import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,12 +173,13 @@ public class ExpenseController {
     }
 
     @GetMapping("/connected")
-    public ResponseEntity<List<ExpenseDTO>> getAllUsersChildrenExpenses(
+    public ResponseEntity<List<ExpenseConnectedDTO>> getAllUsersChildrenExpenses(
             @RequestHeader("Authorization") String accessToken,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String expenseType,
-            @RequestParam(required = false) String date
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false) Long childrenId
     ) {
         List<Long> ids = new ArrayList<>();
         PageRequest pageable = PageRequest.of(page, size);
@@ -196,8 +197,13 @@ public class ExpenseController {
         } else if (date != null) {
             dateParsed = LocalDate.parse(date);
         }
-        List<Expense> expenses = expenseService.getAllUsersChildrenExpenses(ids, dateParsed, expenseTypeParsed, pageable);
-        List<ExpenseDTO> expenseDTOS = ExpenseMapper.toDTO(expenses);
+        List<Expense> expenses = new ArrayList<>();
+        if (childrenId != null) {
+            ids.clear();
+            ids.add(childrenId);
+        }
+        expenses = expenseService.getAllUsersChildrenExpenses(ids, dateParsed, expenseTypeParsed, pageable);
+        List<ExpenseConnectedDTO> expenseDTOS = ExpenseMapper.toDTOConnected(expenses);
         return ResponseEntity.ok(expenseDTOS);
     }
 }

@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.controller;
 
 import com.asana.budgetbuddy.dto.balance.BalanceDTO;
+import com.asana.budgetbuddy.dto.balance.BalanceMonthlyDTO;
 import com.asana.budgetbuddy.dto.balance.BalanceWeeklyDTO;
 import com.asana.budgetbuddy.service.BalanceService;
 import com.asana.budgetbuddy.util.JwtUtil;
@@ -55,6 +56,17 @@ public class BalanceController {
         if (userId != null) {
             List<BalanceWeeklyDTO> balanceWeekly = balanceService.getWeeklyBalanceByUserId(Long.parseLong(userId));
             return ResponseEntity.ok(balanceWeekly);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<List<BalanceMonthlyDTO>> getMonthlyBalanceByUserId(@RequestHeader("Authorization") String accessToken) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            List<BalanceMonthlyDTO> balanceMonthly = balanceService.getMonthlyBalanceByUserId(Long.parseLong(userId));
+            return ResponseEntity.ok(balanceMonthly);
         }
         return ResponseEntity.notFound().build();
     }
