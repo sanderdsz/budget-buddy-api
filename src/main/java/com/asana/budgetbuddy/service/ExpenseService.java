@@ -3,6 +3,7 @@ package com.asana.budgetbuddy.service;
 import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
 import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
 import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
+import com.asana.budgetbuddy.dto.expense.ExpenseTotalDTO;
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Expense;

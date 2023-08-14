@@ -1,9 +1,6 @@
 package com.asana.budgetbuddy.controller;
 
-import com.asana.budgetbuddy.dto.expense.ExpenseConnectedDTO;
-import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
-import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
-import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
+import com.asana.budgetbuddy.dto.expense.*;
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.exception.UnauthorizedException;
 import com.asana.budgetbuddy.model.Expense;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +135,9 @@ public class ExpenseController {
     }
 
     @GetMapping("/monthly")
-    public ResponseEntity<List<ExpenseMonthSummarizeDTO>> getMonthlySummarizedByTypeAndValue(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<List<ExpenseMonthSummarizeDTO>> getMonthlySummarizedByTypeAndValue(
+            @RequestHeader("Authorization") String accessToken
+    ) {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
         if (userId != null) {
@@ -205,5 +205,57 @@ public class ExpenseController {
         expenses = expenseService.getAllUsersChildrenExpenses(ids, dateParsed, expenseTypeParsed, pageable);
         List<ExpenseConnectedDTO> expenseDTOS = ExpenseMapper.toDTOConnected(expenses);
         return ResponseEntity.ok(expenseDTOS);
+    }
+
+    @GetMapping("/total/month")
+    public ResponseEntity<ExpenseTotalDTO> getTotalByMonth(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1);
+            LocalDate endDate = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), startDate.lengthOfMonth());
+            List<Expense> expenseList = expenseService.getAllByUserEmailAndDateBetween(
+                    Long.valueOf(userId),
+                    startDate,
+                    endDate
+            );
+            double sum = expenseList.stream()
+                    .mapToDouble(Expense::getValue)
+                    .sum();
+            ExpenseTotalDTO expenseTotalDTO = ExpenseTotalDTO
+                    .builder()
+                    .value(sum)
+                    .build();
+            return ResponseEntity.ok(expenseTotalDTO);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/total/year")
+    public ResponseEntity<ExpenseTotalDTO> getTotalByYear(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+            LocalDate endDate = LocalDate.of(LocalDate.now().getYear(), 12, 31);
+            List<Expense> expenseList = expenseService.getAllByUserEmailAndDateBetween(
+                    Long.valueOf(userId),
+                    startDate,
+                    endDate
+            );
+            double sum = expenseList.stream()
+                    .mapToDouble(Expense::getValue)
+                    .sum();
+            ExpenseTotalDTO expenseTotalDTO = ExpenseTotalDTO
+                    .builder()
+                    .value(sum)
+                    .build();
+            return ResponseEntity.ok(expenseTotalDTO);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
