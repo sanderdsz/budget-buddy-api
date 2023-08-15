@@ -1,9 +1,6 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.dto.expense.ExpenseDTO;
-import com.asana.budgetbuddy.dto.expense.ExpenseMapper;
-import com.asana.budgetbuddy.dto.expense.ExpenseMonthSummarizeDTO;
-import com.asana.budgetbuddy.dto.expense.ExpenseTotalDTO;
+import com.asana.budgetbuddy.dto.expense.*;
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Expense;
@@ -19,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -184,6 +182,29 @@ public class ExpenseService {
             expenseList.addAll(expenses);
         }
         return expenseList;
+    }
+
+    @Transactional
+    public List<ExpenseMonthlyDTO> getYearExpenses(Long id) {
+        List<ExpenseMonthlyDTO> expenseMonthly = new ArrayList<>();
+        int year = LocalDate.now().getYear();
+        for (Month month : Month.values()) {
+            LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+            LocalDate lastDayOfMonth = LocalDate.of(year, month, firstDayOfMonth.lengthOfMonth());
+            List<Expense> expenses = expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(
+                    id,
+                    firstDayOfMonth,
+                    lastDayOfMonth
+            );
+            double expenseSum = expenses.stream().mapToDouble(Expense::getValue).sum();
+            ExpenseMonthlyDTO monthlyDTO = ExpenseMonthlyDTO
+                    .builder()
+                    .month(month.getValue())
+                    .value(expenseSum)
+                    .build();
+            expenseMonthly.add(monthlyDTO);
+        }
+        return expenseMonthly;
     }
 
     private BigDecimal scaleValue(double value, int scale) {

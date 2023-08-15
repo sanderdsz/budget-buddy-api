@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,4 +257,18 @@ public class ExpenseController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/year")
+    public ResponseEntity<List<ExpenseMonthlyDTO>> getMonthExpensesByYear(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            List<ExpenseMonthlyDTO> expenseMonthly = expenseService.getYearExpenses(Long.parseLong(userId));
+            return ResponseEntity.ok(expenseMonthly);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
