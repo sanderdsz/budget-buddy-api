@@ -50,6 +50,9 @@ a refresh_token, when the OAUTH flow implement's it, should be wise to change th
 - [x] GET all expenses.
 - [x] Expenses date and type filters.
 - [x] Expenses pagination.
+- [x] GET sum expenses current month.
+- [x] GET sum expenses current year.
+- [x] GET sum expenses monthly by year.
 
 ### Incomes
 
