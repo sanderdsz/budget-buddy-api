@@ -196,11 +196,14 @@ public class ExpenseController {
         } else if (date != null) {
             dateParsed = LocalDate.parse(date);
         }
-        List<Expense> expenses = new ArrayList<>();
         if (childrenId != null) {
             ids.clear();
             ids.add(childrenId);
         }
+        if (user.get().getUserParent() != null) {
+            ids.add(user.get().getUserParent().getId());
+        }
+        List<Expense> expenses = new ArrayList<>();
         expenses = expenseService.getAllUsersChildrenExpenses(ids, dateParsed, expenseTypeParsed, pageable);
         List<ExpenseConnectedDTO> expenseDTOS = ExpenseMapper.toDTOConnected(expenses);
         return ResponseEntity.ok(expenseDTOS);
