@@ -74,9 +74,11 @@ public class ExpenseService {
     }
 
     @Transactional
-    public List<ExpenseMonthSummarizeDTO> getMonthlySummarizedByTypeAndValue(Long id) {
+    public List<ExpenseMonthSummarizeDTO> getMonthlySummarizedByTypeAndValue(
+            Long id,
+            Integer month
+    ) {
         int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = LocalDate.of(year, month, startDate.lengthOfMonth());
 

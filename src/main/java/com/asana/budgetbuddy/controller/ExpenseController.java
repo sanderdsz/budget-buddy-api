@@ -16,9 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/expenses")
@@ -133,14 +131,19 @@ public class ExpenseController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/monthly")
+    @GetMapping("/summary/month/{month}")
     public ResponseEntity<List<ExpenseMonthSummarizeDTO>> getMonthlySummarizedByTypeAndValue(
-            @RequestHeader("Authorization") String accessToken
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Integer month
     ) {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
         if (userId != null) {
-            List<ExpenseMonthSummarizeDTO> summarizeDTOS = expenseService.getMonthlySummarizedByTypeAndValue(Long.valueOf(userId));
+            List<ExpenseMonthSummarizeDTO> summarizeDTOS = expenseService.getMonthlySummarizedByTypeAndValue(
+                    Long.valueOf(userId),
+                    month
+            );
+            summarizeDTOS.sort(Comparator.comparing(ExpenseMonthSummarizeDTO::getTotalValue).reversed());
             return ResponseEntity.ok(summarizeDTOS);
         }
         return ResponseEntity.notFound().build();
