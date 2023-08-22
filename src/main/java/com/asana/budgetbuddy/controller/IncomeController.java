@@ -45,6 +45,21 @@ public class IncomeController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<IncomeDTO> getById(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long id
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        if (userId != null) {
+            Income income = incomeService.getById(id);
+            IncomeDTO incomeDTO = IncomeMapper.toDTOSingle(income);
+            return ResponseEntity.ok(incomeDTO);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/pageable")
     public ResponseEntity<List<IncomeDTO>> getAllPageable(
             @RequestHeader("Authorization") String accessToken,

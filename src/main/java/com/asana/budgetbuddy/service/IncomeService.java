@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.service;
 
 import com.asana.budgetbuddy.enums.IncomeType;
+import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Income;
 import com.asana.budgetbuddy.repository.IncomeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class IncomeService {
@@ -21,6 +24,16 @@ public class IncomeService {
     public Income save(Income income) {
         incomeRepository.save(income);
         return income;
+    }
+
+    @Transactional
+    public Income getById(Long id) {
+        try {
+            Optional<Income> income = incomeRepository.findById(id);
+            return income.get();
+        } catch (NoSuchElementException e) {
+            throw new EntityNotFoundException("Income not found");
+        }
     }
 
     @Transactional

@@ -8,9 +8,22 @@ import java.util.List;
 
 public class IncomeMapper {
 
+    public static IncomeDTO toDTOSingle(Income income) {
+        IncomeDTO incomeDTO = IncomeDTO
+                .builder()
+                .id(income.getId())
+                .incomeType(income.getIncomeType().toString())
+                .date(income.getDate())
+                .value(income.getValue())
+                .description(income.getDescription())
+                .build();
+        return incomeDTO;
+    }
+
     public static List<IncomeDTO> toDTO(List<Income> incomes) {
         List<IncomeDTO> incomeDTOS = incomes.stream()
                 .map(income -> new IncomeDTO(
+                        income.getId(),
                         income.getValue(),
                         income.getIncomeType().toString(),
                         income.getDate(),
