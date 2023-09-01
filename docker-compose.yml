@@ -12,3 +12,36 @@ services:
     ports:
       - '3306:3306'
     restart: always
+  app:
+    build: .
+    environment:
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      ACCESS_TOKEN_EXPIRATION_MINUTES: ${ACCESS_TOKEN_EXPIRATION_MINUTES}
+      REFRESH_TOKEN_EXPIRATION_MINUTES: ${REFRESH_TOKEN_EXPIRATION_MINUTES}
+      MYSQL_URL: ${MYSQL_URL}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      EMAIL_NAME: ${EMAIL_NAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_URL: ${REDIS_URL}
+      SALT: ${SALT}
+      SECRET: ${SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+    container_name: budget-buddy-api
+    expose:
+      - 8080
+    ports:
+      - '8080:8080'
+    links:
+      - database
+    depends_on:
+      - database
