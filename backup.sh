@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Prepare the VM to perform the cronjob
+# chmod +x backup.sh
+# crontab -e
+# 15 10 * * * /bin/bash /home/ubuntu/dev/budget-buddy-api/backup.sh
+# crontab -l
+
 # Get today's date in YYYYMMDD format
 current_date=$(date +%Y%m%d)
 echo "Today: $current_date"
@@ -19,6 +25,14 @@ fi
 
 backup_filename="backup_${current_date}.sql"
 
+echo "Starting database dump..."
+# Run the docker exec command to perform a new dump inside the MYSQL container
+sudo docker exec -it budget-buddy-db /bin/bash -c "mysqldump -h localhost -u root -ppassword budget-buddy > backup.sql"
+echo "Database dump performed inside docker container"
+
 # Run the docker cp command to perform a new backup
-docker cp budget-buddy-db:/backup.sql "$backup_filename"
+sudo docker cp budget-buddy-db:/backup.sql "$backup_filename"
 echo "New backup performed: $backup_filename"
+
+# To import the backup to MYSQL
+# mysql -u user -ppassword budget-buddy < /backup.sql
