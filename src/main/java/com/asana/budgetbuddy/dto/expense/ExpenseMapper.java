@@ -2,7 +2,7 @@ package com.asana.budgetbuddy.dto.expense;
 
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.model.Expense;
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
 
 import java.util.List;
 

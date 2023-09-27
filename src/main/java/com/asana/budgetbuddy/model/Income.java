@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.model;
 
 import com.asana.budgetbuddy.enums.IncomeType;
+import com.asana.budgetbuddy.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 

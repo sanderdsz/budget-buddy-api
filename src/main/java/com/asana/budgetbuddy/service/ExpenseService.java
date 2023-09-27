@@ -4,7 +4,7 @@ import com.asana.budgetbuddy.dto.expense.*;
 import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.model.Expense;
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.repository.ExpenseRepository;
 import com.asana.budgetbuddy.util.ExpenseFilter;
 import com.asana.budgetbuddy.util.ExpenseFilterFactory;

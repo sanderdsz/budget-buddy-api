@@ -1,9 +1,9 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserConnectionRequest;
-import com.asana.budgetbuddy.repository.UserConnectionRequestRepository;
-import com.asana.budgetbuddy.repository.UserRepository;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserConnectionRequest;
+import com.asana.budgetbuddy.user.repository.UserConnectionRequestRepository;
+import com.asana.budgetbuddy.user.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

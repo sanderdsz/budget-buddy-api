@@ -1,14 +1,14 @@
-package com.asana.budgetbuddy.controller;
+package com.asana.budgetbuddy.user.controller;
 
-import com.asana.budgetbuddy.dto.user.*;
 import com.asana.budgetbuddy.exception.UserHasParentConnectionException;
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserConnectionRequest;
-import com.asana.budgetbuddy.model.UserData;
-import com.asana.budgetbuddy.repository.UserConnectionRequestRepository;
+import com.asana.budgetbuddy.user.dto.*;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserConnectionRequest;
+import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.repository.UserConnectionRequestRepository;
 import com.asana.budgetbuddy.service.EmailService;
-import com.asana.budgetbuddy.service.UserDataService;
-import com.asana.budgetbuddy.service.UserService;
+import com.asana.budgetbuddy.user.service.UserDataService;
+import com.asana.budgetbuddy.user.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

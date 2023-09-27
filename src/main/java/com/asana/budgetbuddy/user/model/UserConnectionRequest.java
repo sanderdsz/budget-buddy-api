@@ -1,5 +1,7 @@
-package com.asana.budgetbuddy.model;
+package com.asana.budgetbuddy.user.model;
 
+import com.asana.budgetbuddy.model.BaseEntity;
+import com.asana.budgetbuddy.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 

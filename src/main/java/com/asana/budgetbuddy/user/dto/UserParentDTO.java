@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.dto.user;
+package com.asana.budgetbuddy.user.dto;
 
 import jakarta.persistence.Id;
 import lombok.*;
@@ -8,14 +8,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserConnectionDTO {
+public class UserParentDTO {
 
     @Id
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
-    private Boolean isEmailVerified;
-    private Boolean isParent;
 
 }

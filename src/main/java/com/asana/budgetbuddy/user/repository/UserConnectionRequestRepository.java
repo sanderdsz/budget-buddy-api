@@ -1,6 +1,6 @@
-package com.asana.budgetbuddy.repository;
+package com.asana.budgetbuddy.user.repository;
 
-import com.asana.budgetbuddy.model.UserConnectionRequest;
+import com.asana.budgetbuddy.user.model.UserConnectionRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
