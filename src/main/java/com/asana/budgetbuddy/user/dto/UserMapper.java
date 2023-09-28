@@ -1,8 +1,8 @@
-package com.asana.budgetbuddy.dto.user;
+package com.asana.budgetbuddy.user.dto;
 
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserConnectionRequest;
-import com.asana.budgetbuddy.model.UserData;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserConnectionRequest;
+import com.asana.budgetbuddy.user.model.UserData;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.asana.budgetbuddy.dto.user;
+package com.asana.budgetbuddy.user.dto;
 
 import lombok.*;
 

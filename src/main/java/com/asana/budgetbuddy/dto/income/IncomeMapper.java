@@ -2,7 +2,7 @@ package com.asana.budgetbuddy.dto.income;
 
 import com.asana.budgetbuddy.enums.IncomeType;
 import com.asana.budgetbuddy.model.Income;
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
 
 import java.util.List;
 

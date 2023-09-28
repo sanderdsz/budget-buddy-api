@@ -1,6 +1,6 @@
-package com.asana.budgetbuddy.dto.user;
+package com.asana.budgetbuddy.user.dto;
 
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
 import jakarta.persistence.Id;
 import lombok.*;
 

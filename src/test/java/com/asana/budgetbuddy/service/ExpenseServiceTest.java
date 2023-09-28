@@ -1,13 +1,11 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.model.Expense;
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

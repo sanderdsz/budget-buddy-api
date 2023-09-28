@@ -2,11 +2,11 @@ package com.asana.budgetbuddy.service;
 
 import com.asana.budgetbuddy.dto.auth.LoginDTO;
 import com.asana.budgetbuddy.dto.auth.TokenDTO;
-import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserData;
-import com.asana.budgetbuddy.repository.UserDataRepository;
-import com.asana.budgetbuddy.repository.UserRepository;
+import com.asana.budgetbuddy.user.dto.UserRegistrationDTO;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.repository.UserDataRepository;
+import com.asana.budgetbuddy.user.repository.UserRepository;
 import com.asana.budgetbuddy.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
