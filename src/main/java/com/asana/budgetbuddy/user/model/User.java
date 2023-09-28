@@ -1,6 +1,6 @@
 package com.asana.budgetbuddy.user.model;
 
-import com.asana.budgetbuddy.model.BaseEntity;
+import com.asana.budgetbuddy.shared.model.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,7 @@
 package com.asana.budgetbuddy.service;
 
-import com.asana.budgetbuddy.model.Expense;
+import com.asana.budgetbuddy.expense.model.Expense;
+import com.asana.budgetbuddy.expense.service.ExpenseService;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.service.UserService;
 import org.junit.jupiter.api.Test;

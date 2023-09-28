@@ -1,6 +1,6 @@
 package com.asana.budgetbuddy.config;
 
-import com.asana.budgetbuddy.util.LoggingFilter;
+import com.asana.budgetbuddy.shared.util.LoggingFilter;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

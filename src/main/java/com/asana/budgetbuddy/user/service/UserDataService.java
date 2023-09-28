@@ -4,7 +4,7 @@ import com.asana.budgetbuddy.user.dto.UserRegistrationDTO;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.model.UserData;
 import com.asana.budgetbuddy.user.repository.UserDataRepository;
-import com.asana.budgetbuddy.util.JwtUtil;
+import com.asana.budgetbuddy.shared.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
