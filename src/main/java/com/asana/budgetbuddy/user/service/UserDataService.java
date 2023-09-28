@@ -1,9 +1,9 @@
-package com.asana.budgetbuddy.service;
+package com.asana.budgetbuddy.user.service;
 
-import com.asana.budgetbuddy.dto.user.UserRegistrationDTO;
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserData;
-import com.asana.budgetbuddy.repository.UserDataRepository;
+import com.asana.budgetbuddy.user.dto.UserRegistrationDTO;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.repository.UserDataRepository;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

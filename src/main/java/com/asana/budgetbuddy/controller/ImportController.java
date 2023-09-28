@@ -5,10 +5,10 @@ import com.asana.budgetbuddy.enums.ExpenseType;
 import com.asana.budgetbuddy.enums.IncomeType;
 import com.asana.budgetbuddy.model.Expense;
 import com.asana.budgetbuddy.model.Income;
-import com.asana.budgetbuddy.model.User;
+import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.service.ExpenseService;
 import com.asana.budgetbuddy.service.IncomeService;
-import com.asana.budgetbuddy.service.UserService;
+import com.asana.budgetbuddy.user.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/import")

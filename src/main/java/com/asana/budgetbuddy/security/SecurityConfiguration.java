@@ -1,6 +1,6 @@
 package com.asana.budgetbuddy.security;
 
-import com.asana.budgetbuddy.service.UserService;
+import com.asana.budgetbuddy.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

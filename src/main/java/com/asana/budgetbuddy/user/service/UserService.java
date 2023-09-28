@@ -1,13 +1,11 @@
-package com.asana.budgetbuddy.service;
+package com.asana.budgetbuddy.user.service;
 
-import com.asana.budgetbuddy.dto.user.UserConnectionDTO;
-import com.asana.budgetbuddy.dto.user.UserMapper;
-import com.asana.budgetbuddy.dto.user.UserUpdateDTO;
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.model.UserConnectionRequest;
-import com.asana.budgetbuddy.repository.UserConnectionRequestRepository;
-import com.asana.budgetbuddy.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
+import com.asana.budgetbuddy.user.dto.UserConnectionDTO;
+import com.asana.budgetbuddy.user.dto.UserMapper;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.model.UserConnectionRequest;
+import com.asana.budgetbuddy.user.repository.UserConnectionRequestRepository;
+import com.asana.budgetbuddy.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

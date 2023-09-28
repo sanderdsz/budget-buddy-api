@@ -1,7 +1,7 @@
 package com.asana.budgetbuddy.security;
 
-import com.asana.budgetbuddy.model.User;
-import com.asana.budgetbuddy.service.UserService;
+import com.asana.budgetbuddy.user.model.User;
+import com.asana.budgetbuddy.user.service.UserService;
 import com.asana.budgetbuddy.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
