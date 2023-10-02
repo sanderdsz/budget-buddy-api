@@ -1,9 +1,12 @@
 package com.asana.budgetbuddy.income.service;
 
+import com.asana.budgetbuddy.income.dto.IncomeDTO;
+import com.asana.budgetbuddy.income.dto.IncomeMapper;
 import com.asana.budgetbuddy.income.enums.IncomeType;
-import com.asana.budgetbuddy.shared.exception.EntityNotFoundException;
 import com.asana.budgetbuddy.income.model.Income;
 import com.asana.budgetbuddy.income.repository.IncomeRepository;
+import com.asana.budgetbuddy.shared.exception.EntityNotFoundException;
+import com.asana.budgetbuddy.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,30 @@ public class IncomeService {
     public Income save(Income income) {
         incomeRepository.save(income);
         return income;
+    }
+
+    @Transactional
+    public void delete(Long id) { incomeRepository.deleteById(id); }
+
+    @Transactional
+    public Income put(IncomeDTO incomeDTO, User user) {
+        Income newIncome = null;
+        try {
+            Optional<Income> income = incomeRepository.findById(incomeDTO.getId());
+            if (income.isPresent()) {
+                newIncome = IncomeMapper.toModel(incomeDTO, user);
+                newIncome.setId(incomeDTO.getId());
+                newIncome.setUser(user);
+                newIncome.setValue(incomeDTO.getValue());
+                newIncome.setDate(incomeDTO.getDate());
+                newIncome.setIncomeType(IncomeType.valueOf(incomeDTO.getIncomeType()));
+                newIncome.setDescription(incomeDTO.getDescription());
+                incomeRepository.save(newIncome);
+            }
+        } catch (NoSuchElementException e) {
+            throw new EntityNotFoundException("Income not found");
+        }
+        return newIncome;
     }
 
     @Transactional
