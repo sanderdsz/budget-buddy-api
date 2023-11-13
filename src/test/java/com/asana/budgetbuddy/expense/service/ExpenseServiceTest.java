@@ -1,12 +1,17 @@
-package com.asana.budgetbuddy.service;
+package com.asana.budgetbuddy.expense.service;
 
+import com.asana.budgetbuddy.auth.service.AuthService;
+import com.asana.budgetbuddy.expense.enums.ExpenseType;
 import com.asana.budgetbuddy.expense.model.Expense;
-import com.asana.budgetbuddy.expense.service.ExpenseService;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,42 +20,37 @@ public class ExpenseServiceTest {
 
     @Autowired
     protected ExpenseService expenseService;
-
     @Autowired
     protected UserService userService;
+    @Autowired
+    protected AuthService authService;
+    private Expense expense;
 
-    /*
-    @Test
-    void shouldGetById() {
-        User newUser = User.builder()
-                .name("Lorem Ipsum")
-                .email("lorem@ipsum.com")
-                .build();
-        User user = this.userService.save(newUser);
-
-        Expense newExpense = Expense.builder()
-                .value(10.00)
-                .expenseType(ExpenseType.GROCERY)
-                .user(user)
-                .build();
-        Expense expense = this.expenseService.save(newExpense);
-        Optional<Expense> oldExpense = this.expenseService.getById(expense.getId());
-        assertThat(oldExpense.get().getId()).isNotEqualTo(0L);
-    }
-
-     */
-
-    @Test
-    void shouldSave() {
+    @BeforeEach
+    public void setUp() {
         User user = new User();
         user.setId(1L);
         user.setFirstName("Lorem");
         user.setLastName("Ipsum");
         user.setEmail("lorem@ipsum.com");
 
-        Expense expense = new Expense();
+        expense = new Expense();
         expense.setUser(user);
         expense.setValue(10.00);
+        expense.setExpenseType(ExpenseType.CAR);
+        expense.setDate(LocalDate.now());
+        expense.setDescription("Lorem Ipsum");
+    }
+
+    @Test
+    void shouldGetById() {
+        this.expenseService.save(expense);
+        Optional<Expense> oldExpense = Optional.ofNullable(this.expenseService.getById(expense.getId()));
+        assertThat(oldExpense.get().getId()).isNotEqualTo(0L);
+    }
+
+    @Test
+    void shouldSave() {
         this.expenseService.save(expense);
         assertThat(expense.getId().longValue()).isNotEqualTo(0L);
     }
