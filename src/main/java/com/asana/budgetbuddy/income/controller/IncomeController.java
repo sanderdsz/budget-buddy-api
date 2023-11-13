@@ -4,6 +4,7 @@ import com.asana.budgetbuddy.income.dto.IncomeDTO;
 import com.asana.budgetbuddy.income.dto.IncomeMapper;
 import com.asana.budgetbuddy.income.enums.IncomeType;
 import com.asana.budgetbuddy.income.model.Income;
+import com.asana.budgetbuddy.shared.exception.UnauthorizedException;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.income.service.IncomeService;
 import com.asana.budgetbuddy.user.service.UserService;
@@ -42,6 +43,35 @@ public class IncomeController {
         Optional<User> user = userService.getById(Long.valueOf(userId));
         Income income = IncomeMapper.toModel(incomeDTO, user.get());
         incomeService.save(income);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity delete(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long id
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Income income = incomeService.getById(id);
+        if (Long.parseLong(userId) != income.getUser().getId()) {
+            throw new UnauthorizedException();
+        }
+        incomeService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity put(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody IncomeDTO incomeDTO
+    ) {
+        Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
+        String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
+        Optional<User> user = userService.getById(Long.valueOf(userId));
+        incomeService.put(incomeDTO, user.get());
         return ResponseEntity.ok().build();
     }
 
