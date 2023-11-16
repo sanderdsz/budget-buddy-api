@@ -5,6 +5,7 @@ import com.asana.budgetbuddy.shared.model.BaseEntity;
 import com.asana.budgetbuddy.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "incomes")
 public class Income extends BaseEntity {
 

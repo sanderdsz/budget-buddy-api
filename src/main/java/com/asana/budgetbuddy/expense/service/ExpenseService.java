@@ -47,23 +47,18 @@ public class ExpenseService {
 
     @Transactional
     public Expense put(ExpenseDTO expenseDTO, User user) {
-        Expense newExpense = null;
-        try {
-            Optional<Expense> expense = expenseRepository.findById(expenseDTO.getId());
-            if (expense.isPresent()) {
-                newExpense = ExpenseMapper.toModel(expenseDTO, user);
-                newExpense.setId(expenseDTO.getId());
-                newExpense.setUser(user);
-                newExpense.setDate(expenseDTO.getDate());
-                newExpense.setValue(expenseDTO.getValue());
-                newExpense.setExpenseType(ExpenseType.valueOf(expenseDTO.getExpenseType()));
-                newExpense.setDescription(expenseDTO.getDescription());
-                expenseRepository.save(newExpense);
-            }
-        } catch (NoSuchElementException e) {
-            throw new EntityNotFoundException("Expense not found");
-        }
-        return newExpense;
+        return expenseRepository.findById(expenseDTO.getId())
+                .map(existingExpense -> {
+                    Expense updatedExpense = ExpenseMapper.toModel(expenseDTO, user);
+                    updatedExpense.setId(expenseDTO.getId());
+                    updatedExpense.setUser(user);
+                    updatedExpense.setDate(expenseDTO.getDate());
+                    updatedExpense.setValue(expenseDTO.getValue());
+                    updatedExpense.setExpenseType(ExpenseType.valueOf(expenseDTO.getExpenseType()));
+                    updatedExpense.setDescription(expenseDTO.getDescription());
+                    return expenseRepository.save(updatedExpense);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found"));
     }
 
     @Transactional
@@ -88,48 +83,13 @@ public class ExpenseService {
         List<ExpenseMonthSummarizeDTO> expenseMonthSummarizeDTOList = new ArrayList<>();
         List<Expense> expenseList = expenseRepository.findAllByUser_IdAndDateBetweenOrderByDateDesc(id, startDate, endDate);
 
-        ExpenseFilter mealsFilter = filterFactory.createFilter(ExpenseType.MEALS);
-        List<Expense> mealsExpenses = mealsFilter.filter(expenseList);
-        if (mealsExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, mealsExpenses, ExpenseType.MEALS));
+        for (ExpenseType expenseType: ExpenseType.values()) {
+            ExpenseFilter expenseFilter = filterFactory.createFilter(expenseType);
+            List<Expense> filteredExpenses = expenseFilter.filter(expenseList);
+            if (!filteredExpenses.isEmpty()) {
+                expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, filteredExpenses, expenseType));
+            }
         }
-
-        ExpenseFilter groceryFilter = filterFactory.createFilter(ExpenseType.GROCERY);
-        List<Expense> groceryExpenses = groceryFilter.filter(expenseList);
-        if (groceryExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, groceryExpenses, ExpenseType.GROCERY));
-        }
-
-        ExpenseFilter housingFilter = filterFactory.createFilter(ExpenseType.HOUSING);
-        List<Expense> housingExpenses = housingFilter.filter(expenseList);
-        if (housingExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, housingExpenses, ExpenseType.HOUSING));
-        }
-
-        ExpenseFilter pharmacyFilter = filterFactory.createFilter(ExpenseType.PHARMACY);
-        List<Expense> pharmacyExpenses = pharmacyFilter.filter(expenseList);
-        if (pharmacyExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, pharmacyExpenses, ExpenseType.PHARMACY));
-        }
-
-        ExpenseFilter shoppingFilter = filterFactory.createFilter(ExpenseType.SHOPPING);
-        List<Expense> shoppingExpenses = shoppingFilter.filter(expenseList);
-        if (shoppingExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, shoppingExpenses, ExpenseType.SHOPPING));
-        }
-
-        ExpenseFilter travelsFilter = filterFactory.createFilter(ExpenseType.TRAVELS);
-        List<Expense> travelsExpenses = travelsFilter.filter(expenseList);
-        if (travelsExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, travelsExpenses, ExpenseType.TRAVELS));
-        }
-
-        ExpenseFilter carFilter = filterFactory.createFilter(ExpenseType.CAR);
-        List<Expense> carExpenses = carFilter.filter(expenseList);
-        if (carExpenses.size() != 0) {
-            expenseMonthSummarizeDTOList.add(monthSummarizeFactory(expenseList, carExpenses, ExpenseType.CAR));
-        }
-
         return expenseMonthSummarizeDTOList;
     }
 

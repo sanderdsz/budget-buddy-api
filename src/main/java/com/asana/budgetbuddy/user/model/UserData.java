@@ -3,13 +3,14 @@ package com.asana.budgetbuddy.user.model;
 import com.asana.budgetbuddy.shared.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "users_data")
 public class UserData extends BaseEntity {
 
