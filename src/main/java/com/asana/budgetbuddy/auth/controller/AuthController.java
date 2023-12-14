@@ -1,5 +1,6 @@
 package com.asana.budgetbuddy.auth.controller;
 
+import com.asana.budgetbuddy.auth.dto.GoogleUserDTO;
 import com.asana.budgetbuddy.auth.dto.LoginDTO;
 import com.asana.budgetbuddy.auth.dto.TokenDTO;
 import com.asana.budgetbuddy.user.dto.UserRegistrationDTO;
@@ -36,6 +37,15 @@ public class AuthController {
     @PostMapping("/verify")
     public ResponseEntity<TokenDTO> verify(@RequestBody TokenDTO tokenDTO) {
         TokenDTO token = authService.verify(tokenDTO);
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<TokenDTO> google(
+            @RequestBody GoogleUserDTO googleUserDTO,
+            @RequestParam String accessToken
+    ) {
+        TokenDTO token = authService.googleVerification(accessToken, googleUserDTO);
         return ResponseEntity.ok(token);
     }
 }

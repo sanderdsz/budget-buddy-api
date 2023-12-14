@@ -3,6 +3,7 @@ package com.asana.budgetbuddy.user.dto;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.model.UserConnectionRequest;
 import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.model.UserDataExternal;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,6 +67,41 @@ public class UserMapper {
                     .lastName(user.getLastName())
                     .email(user.getEmail())
                     .accessToken(userData.getAccessToken())
+                    .build();
+        }
+        return userDTO;
+    }
+
+    public static UserDTO toExternalDTO(User user, UserDataExternal userDataExternal) {
+        UserDTO userDTO;
+        if (user.getUserParent() != null) {
+            userDTO = UserDTO
+                    .builder()
+                    .id(user.getId())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .userParent(toParentDTO(user))
+                    .accessToken(userDataExternal.getProviderToken())
+                    .build();
+        } else if (user.getUserChildren() != null) {
+            userDTO = UserDTO
+                    .builder()
+                    .id(user.getId())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .userChildren(toChildrenDTO(user))
+                    .accessToken(userDataExternal.getProviderToken())
+                    .build();
+        } else {
+            userDTO = UserDTO
+                    .builder()
+                    .id(user.getId())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .accessToken(userDataExternal.getProviderToken())
                     .build();
         }
         return userDTO;

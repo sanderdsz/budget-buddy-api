@@ -1,10 +1,14 @@
 package com.asana.budgetbuddy.auth.service;
 
+import com.asana.budgetbuddy.auth.dto.GoogleAuthResponseDTO;
+import com.asana.budgetbuddy.auth.dto.GoogleUserDTO;
 import com.asana.budgetbuddy.auth.dto.LoginDTO;
 import com.asana.budgetbuddy.auth.dto.TokenDTO;
 import com.asana.budgetbuddy.user.dto.UserRegistrationDTO;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.model.UserDataExternal;
+import com.asana.budgetbuddy.user.repository.UserDataExternalRepository;
 import com.asana.budgetbuddy.user.repository.UserDataRepository;
 import com.asana.budgetbuddy.user.repository.UserRepository;
 import com.asana.budgetbuddy.shared.util.JwtUtil;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -31,6 +36,9 @@ public class AuthService {
 
     @Autowired
     private UserDataRepository userDataRepository;
+
+    @Autowired
+    private UserDataExternalRepository userDataExternalRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -134,5 +142,83 @@ public class AuthService {
             }
         }
         return tokenDTO;
+    }
+
+    @Transactional
+    public TokenDTO googleVerification(String googleAccessToken, GoogleUserDTO googleUserDTO) {
+        try {
+            String googleTokenVerifyUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + googleAccessToken;
+            GoogleAuthResponseDTO googleAuthResponse = new RestTemplate().getForObject(googleTokenVerifyUrl, GoogleAuthResponseDTO.class);
+            if (googleAuthResponse != null) {
+                String accessToken;
+                Optional<User> user = userRepository.findByEmail(googleAuthResponse.getEmail());
+                if (user.isPresent()) {
+                    accessToken = getRedisToken(user.get());
+                    if (accessToken != null) {
+                        TokenDTO tokenDTO = TokenDTO.builder()
+                                .email(user.get().getEmail())
+                                .accessToken(accessToken)
+                                .build();
+                        return tokenDTO;
+                    } else {
+                        accessToken = jwtUtil.generateAccessToken(user.get());
+                        setRedisToken(user.get(), accessToken);
+                        TokenDTO tokenDTO = TokenDTO.builder()
+                                .email(user.get().getEmail())
+                                .accessToken(accessToken)
+                                .build();
+                        return tokenDTO;
+                    }
+                } else {
+                    User newUser = User.builder()
+                            .firstName(googleUserDTO.getFirstName())
+                            .lastName(googleUserDTO.getLastName())
+                            .email(googleUserDTO.getEmail())
+                            .isExternal(true)
+                            .build();
+                    User savedUser = userRepository.save(newUser);
+                    UserDataExternal newUserData = UserDataExternal.builder()
+                            .user(savedUser)
+                            .providerName("GOOGLE")
+                            .providerId(googleUserDTO.getId())
+                            .providerToken(googleAccessToken)
+                            .build();
+                    UserDataExternal savedUserData = userDataExternalRepository.save(newUserData);
+                    accessToken = jwtUtil.generateAccessToken(savedUser);
+                    setRedisToken(savedUser, accessToken);
+                    TokenDTO tokenDTO = TokenDTO.builder()
+                            .email(savedUser.getEmail())
+                            .accessToken(accessToken)
+                            .build();
+                    return tokenDTO;
+                }
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Error communicating with Google API");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token invalid");
+        }
+    }
+
+    private String getRedisToken(User user) {
+        JedisPool pool = new JedisPool(redisUrl);
+        String existAccessToken;
+        try (Jedis jedis = pool.getResource()) {
+            existAccessToken = jedis.get("user:" + user.getEmail() + ":access_token");
+        }
+        pool.close();
+        return existAccessToken;
+    }
+
+    private void setRedisToken(User user, String accessToken) {
+        JedisPool pool = new JedisPool(redisUrl);
+        try (Jedis jedis = pool.getResource()) {
+            SetParams params = new SetParams();
+            jedis.set(
+                    "user:" + user.getEmail() + ":access_token",
+                    accessToken,
+                    params.ex(28800)
+            );
+        }
+        pool.close();
     }
 }

@@ -5,8 +5,10 @@ import com.asana.budgetbuddy.user.dto.*;
 import com.asana.budgetbuddy.user.model.User;
 import com.asana.budgetbuddy.user.model.UserConnectionRequest;
 import com.asana.budgetbuddy.user.model.UserData;
+import com.asana.budgetbuddy.user.model.UserDataExternal;
 import com.asana.budgetbuddy.user.repository.UserConnectionRequestRepository;
 import com.asana.budgetbuddy.shared.service.EmailService;
+import com.asana.budgetbuddy.user.service.UserDataExternalService;
 import com.asana.budgetbuddy.user.service.UserDataService;
 import com.asana.budgetbuddy.user.service.UserService;
 import com.asana.budgetbuddy.shared.util.JwtUtil;
@@ -32,6 +34,9 @@ public class UserController {
 
     @Autowired
     private UserDataService userDataService;
+
+    @Autowired
+    private UserDataExternalService userDataExternalService;
 
     @Autowired
     private EmailService emailService;
@@ -77,9 +82,14 @@ public class UserController {
         Optional<String> parsedToken = jwtUtil.parseAccessToken(accessToken);
         String userId = jwtUtil.getUserIdFromAccessToken(parsedToken.get());
         Optional<User> user = userService.getById(Long.valueOf(userId));
-        if (user.isPresent()) {
+        if (user.isPresent() && !user.get().isExternal()) {
             Optional<UserData> userData = userDataService.getByUserId(user.get().getId());
             UserDTO userDTO = UserMapper.toDTO(user.get(), userData.get());
+            return ResponseEntity.ok(userDTO);
+        }
+        if (user.isPresent()) {
+            Optional<UserDataExternal> userDataExternal = userDataExternalService.getByUserId(user.get().getId());
+            UserDTO userDTO = UserMapper.toExternalDTO(user.get(), userDataExternal.get());
             return ResponseEntity.ok(userDTO);
         } else {
             return ResponseEntity.notFound().build();
