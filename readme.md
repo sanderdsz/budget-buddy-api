@@ -35,12 +35,12 @@ a refresh_token, when the OAUTH flow implement's it, should be wise to change th
 
 ## Google Flow
 
-- [ ] Redirect auth URL.
-- [ ] Access and refresh tokens creation.
-- [ ] User details persistence into MySQL.
-- [ ] Access token persistence into Redis.
-- [ ] Tokens revalidation and persistence.
-- [ ] Tokens expire verification.
+- [ ] Redirect auth URL. (Done at frontend)
+- [ ] Google access tokens creation. (Done at frontend)
+- [x] User details persistence into MySQL.
+- [x] Access token persistence into Redis.
+- [x] Internal tokens revalidation and persistence.
+- [x] Google access tokens expire verification.
 
 ### Expenses
 
